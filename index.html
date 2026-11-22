@@ -485,6 +485,19 @@ a.acard:hover .athumb img{transform:scale(1.04)}
 @media(max-width:640px){.joinbar{margin:10px 0 0;flex-wrap:wrap;gap:2px 8px}.joinbar span{flex-basis:100%;order:3}}
 
 /* 리얼픽 분석 리포트 */
+.ana-how{background:var(--accent-soft);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;font-size:14px}.ana-how ol{margin:6px 0 4px;padding-left:20px;display:grid;gap:3px}.ana-how a{color:var(--accent);font-weight:700}
+.ana-form{padding:20px}.ana-form h3{font-size:15px;font-weight:800;margin:18px 0 10px}.ana-form h3:first-child{margin-top:0}
+.ana-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:10px}.ana-addr{margin-bottom:10px}.ana-addr input{width:100%}
+.ana-form .cin input{text-align:left}.ana-form .cin input[inputmode]{text-align:right}.ana-form select{width:100%;border:0;background:transparent;font:inherit;color:inherit;padding:0;outline:0}
+.ana-ratio{display:grid;align-content:start;gap:6px}.ana-ratio b{font-size:22px;font-weight:900;color:var(--accent);padding-top:4px}
+.ana-ok{display:flex;gap:8px;align-items:center;font-weight:700;margin-bottom:10px}
+.ana-rights{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 16px}.ana-rights label{display:flex;gap:8px;align-items:center;font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:8px}
+.ana-rights label.lv-high{border-left:3px solid var(--hot)}.ana-rights label.lv-mid{border-left:3px solid #d97706}.ana-rights.off{opacity:.45}
+.ana-err{color:var(--hot);font-weight:700;margin:12px 0 0}.ana-act{display:flex;gap:8px;margin-top:16px}.ana-act .primary{min-width:160px}
+.ana-out{margin-top:22px}.ana-deals{padding:18px;margin-top:14px}.ana-deals h3{margin:0 0 4px;font-size:16px;font-weight:800}
+.ana-tbl .mk-tr{grid-template-columns:.9fr 2.4fr .7fr 1fr}.ana-tbl .mk-tr>span:nth-child(2){text-align:left!important}
+.ana-ext{margin-top:18px;padding:14px 18px;background:var(--sunk);border-style:dashed}.ana-ext p{margin:4px 0 0}
+@media (max-width:760px){.ana-g3{grid-template-columns:1fr 1fr}.ana-rights{grid-template-columns:1fr}.ana-tbl .mk-tr{grid-template-columns:2fr 1fr}.ana-tbl .mk-tr>span:nth-child(1),.ana-tbl .mk-tr>span:nth-child(3){display:none}.ana-tbl .mk-tr>span:nth-child(4){display:block}}
 .mk-h{font-size:18px;font-weight:900;margin:8px 0 12px}.mk-svg .mk-fail{fill:var(--line)}
 .mk-key{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 4px 0 6px;vertical-align:-1px}.mk-key.hl{background:var(--accent)}.mk-key.fail{background:var(--line)}
 .mk-result{background:linear-gradient(180deg,var(--accent-soft),var(--surface))}
@@ -2024,7 +2037,7 @@ function viewAuctions(){
   const advCount=['no','org','usage','status','apMin','apMax','mpMin','mpMax','rMin','rMax','laMin','laMax','baMin','baMax','dFrom','dTo','fails'].filter(k=>AF[k]!=='').length+(AF.prpt.length?1:0)+(AF.share!=='all'?1:0);
   const u=AF.unit==='py'?'평':'㎡';
   return `<section class="block">${secHead('온비드 공매 · 매일 자동 갱신','경매·공매 물건')}
-    <nav class="subnav" aria-label="공매 구분">${[['all','공매 전체',AUC.items.filter(i=>aucDday(i)[1]!=='closed').length],['trust','신탁공매',trusts.reduce((s,[,n])=>s+n,0)],['kdic','예보공매',kdicN]].map(([k,t,n])=>`<a href="#auctions" data-aucmode="${k}" ${AF.mode===k?'aria-current="page"':''}>${t} <span class="num" style="opacity:.55;font-weight:600">${n.toLocaleString()}</span></a>`).join('')}<a href="#market" style="margin-left:auto">📊 시장 리포트</a><a href="#calc">🧮 수익률 계산기</a></nav>
+    <nav class="subnav" aria-label="공매 구분">${[['all','공매 전체',AUC.items.filter(i=>aucDday(i)[1]!=='closed').length],['trust','신탁공매',trusts.reduce((s,[,n])=>s+n,0)],['kdic','예보공매',kdicN]].map(([k,t,n])=>`<a href="#auctions" data-aucmode="${k}" ${AF.mode===k?'aria-current="page"':''}>${t} <span class="num" style="opacity:.55;font-weight:600">${n.toLocaleString()}</span></a>`).join('')}<a href="#analyze" style="margin-left:auto">🔎 경매 물건 분석기</a><a href="#market">📊 시장 리포트</a><a href="#calc">🧮 수익률 계산기</a></nav>
     ${AF.mode==='trust'?`<div class="trustbar"><span class="note" style="font-weight:700">신탁회사</span>${[['전체',trusts.reduce((s,[,n])=>s+n,0)],...trusts].map(([t,n])=>`<button type="button" class="tchip" aria-pressed="${AF.trust===t}" data-auctrust="${esc(t)}">${esc(t)} <span class="num">${n}</span></button>`).join('')}</div>`:''}
     ${AF.mode==='kdic'&&!kdicN?'<div class="empty" style="margin-bottom:14px">지금 온비드에 올라온 예금보험공사 공매 물건이 없어요. 새로 올라오면 자동으로 여기에 모입니다.</div>':''}
     <div class="feed"><span class="dot"></span><span>한국자산관리공사 온비드 공매</span><span>·</span><span>${AUC.updatedAt?'마지막 동기화 '+fmtTime(AUC.updatedAt):'동기화 대기 중'}</span></div>
@@ -2442,8 +2455,8 @@ function aucAnalyze(it){
   const disc=est?(minp/est-1)*100:null;
   // 권리 위험
   const L=x?.detail?.lists||{}, S=x?.detail?.scalars||{};
-  const rights={level:x?(x.detail?'low':'unknown'):'loading',why:[]};
-  if(x?.detail){
+  const rights=it._rights||{level:x?(x.detail?'low':'unknown'):'loading',why:[]};
+  if(!it._rights&&x?.detail){
     const blob=JSON.stringify([L.rgstPrmrInfList,L.leasInfList,L.ocpyRelList,S.cltrEtcCont,S.icdlCdtnCont]||'');
     const hard=['가처분','가등기','유치권','법정지상권','예고등기','선순위','대항력','인수'].filter(k=>blob.includes(k));
     if(/지분/.test(it.title+(S.cltrEtcCont||''))) hard.push('지분 매각');
@@ -2474,7 +2487,8 @@ function aucAnalyze(it){
   if(+it.fails>=3){score+=5;pros.push(`${it.fails}회 유찰로 가격이 많이 내려왔어요`)}
   if(rights.level==='high'){score-=30;cons.push('권리 관계에 위험 신호가 있어요')}
   else if(rights.level==='mid'){score-=10;cons.push('권리·명도 확인이 필요해요')}
-  else if(rights.level==='low') pros.push('공고상 권리 문제가 적어 보여요');
+  else if(rights.level==='low') pros.push(it._rights?'입력하신 명세서 내용상 권리 문제가 적어요':'공고상 권리 문제가 적어 보여요');
+  else if(rights.level==='unknown'&&it._rights) score-=12;
   if(x?.building?.useAprDay){const y=+String(x.building.useAprDay).slice(0,4);if(y&&new Date().getFullYear()-y>=30){score-=5;cons.push(`사용승인 ${y}년 — 30년 넘은 건물`)}}
   const sim=fair?calcRun({...CALC_DEF(),...calcPrefill(it,{fair,est}),exit:'sell'}):null;
   if(sim){if(sim.profit<0){score-=12;cons.push('기본 비용(세금·명도·수리·이자)을 넣으면 2년 뒤 예상 수익이 마이너스예요')}else if(sim.roi>=30)pros.push(`참고 입찰가로 사서 2년 뒤 시세에 팔면 내 돈 대비 약 ${Math.round(sim.roi)}% 수익`)}
@@ -2499,7 +2513,7 @@ function aucReportHtml(it){
     </div>
     <div class="rpt-pc"><div class="pro"><h3>좋은 점</h3>${a.pros.length?`<ul>${a.pros.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:'<p class="note">눈에 띄는 장점이 없어요</p>'}</div>
       <div class="con"><h3>확인할 점</h3><ul>${[...a.cons,...a.rights.why.slice(a.rights.level==='low'?1:0)].filter((v,i,s)=>s.indexOf(v)===i).map(t=>`<li>${esc(t)}</li>`).join('')||'<li>특별히 걸리는 점이 없어요</li>'}</ul></div></div>
-    <div class="rpt-ai">${ai?.data?aiOpinionHtml(ai.data):`<div class="rpt-ai-cta"><div><b>AI 의견 보기</b><span class="note">위 자료와 온비드 공고를 AI가 읽고 장단점과 입찰 전 확인할 것을 정리해요 (회원 · 하루 사용 횟수에서 1회 차감)</span></div><button type="button" class="btn" data-aucai="${esc(it.id)}" ${ai?.loading?'disabled':''}>${ai?.loading?'분석 중…':'AI 의견 받기'}</button></div>${ai?.error?`<p class="note" style="color:var(--hot);margin-top:8px">${esc(ai.error)}</p>`:''}`}</div>
+    ${it._noAI?'':`<div class="rpt-ai">${ai?.data?aiOpinionHtml(ai.data):`<div class="rpt-ai-cta"><div><b>AI 의견 보기</b><span class="note">위 자료와 온비드 공고를 AI가 읽고 장단점과 입찰 전 확인할 것을 정리해요 (회원 · 하루 사용 횟수에서 1회 차감)</span></div><button type="button" class="btn" data-aucai="${esc(it.id)}" ${ai?.loading?'disabled':''}>${ai?.loading?'분석 중…':'AI 의견 받기'}</button></div>${ai?.error?`<p class="note" style="color:var(--hot);margin-top:8px">${esc(ai.error)}</p>`:''}`}</div>`}
     <div class="rpt-foot"><a class="btn primary" href="#calc" data-calcfrom="${esc(it.id)}">수익률 직접 계산해 보기 →</a><span class="note">등급과 입찰가는 참고용 계산이에요. 투자 권유가 아니며, 입찰 전 공고문·감정평가서·현장을 꼭 확인하세요.</span></div>
   </div>`;
 }
@@ -2536,6 +2550,146 @@ function calcPrefill(it,a){
 
 /* ---- 수익률 계산기 화면 ---- */
 const cin=(k,label,unit='만원',extra='')=>`<label class="cf"><span>${label}</span><div class="cin"><input name="${k}" value="${esc(String(CALC[k]??''))}" inputmode="decimal" autocomplete="off" ${extra}><i>${unit}</i></div>${unit==='만원'?`<small data-h="${k}"></small>`:''}</label>`;
+/* ================= 경매 물건 분석기 (사건번호 입력형) =================
+   이용자가 법원경매 사이트에서 본 물건 정보를 직접 넣으면, 국토부 실거래가로 시세를 추정하고
+   리얼픽 분석 리포트(등급·참고 입찰가·예상 수익)를 보여준다. 법원 사이트에는 접속하지 않는다. */
+const ANA_CATS=[['apt','아파트'],['offi','오피스텔'],['rh','연립·다세대(빌라)'],['sh','단독·다가구'],['nrg','상가·업무용'],['land','토지'],['indu','공장·창고']];
+const ANA_RIGHTS=[
+  ['senior','선순위 임차인 (대항력 있음)','high','선순위 임차인이 있어 보증금을 낙찰자가 물어줘야 할 수 있어요'],
+  ['tenant','임차인 있음 (대항력 없음)','mid','임차인이 있어 배당·명도 확인이 필요해요'],
+  ['occ','소유자·점유자가 살고 있음','mid','점유자를 내보내는 명도가 필요해요'],
+  ['lien','유치권 신고','high','유치권 신고가 있어요 (성립 여부를 꼭 확인)'],
+  ['surface','법정지상권 성립 여지','high','법정지상권이 성립할 수 있어요'],
+  ['share','지분 매각','high','지분 매각이라 대출·사용이 어려워요'],
+  ['sep','대지권 미등기·토지 별도','high','대지권이 없거나 토지·건물이 따로 매각돼요'],
+  ['claim','인수되는 가처분·가등기','high','낙찰 후에도 지워지지 않는 가처분·가등기가 있어요'],
+  ['viol','위반건축물','mid','위반건축물이라 이행강제금·대출 제한을 확인해야 해요'],
+  ['resale','재매각 사건','mid','재매각 사건이라 전 낙찰자가 잔금을 안 낸 이유를 확인해야 해요']];
+const ANA_JIMOK=['','대','전','답','임야','잡종지','과수원','목장용지','공장용지','창고용지','주차장','도로'];
+const ANA_SIDO={'서울특별시':'서울','서울시':'서울','부산광역시':'부산','대구광역시':'대구','인천광역시':'인천','광주광역시':'광주','대전광역시':'대전','울산광역시':'울산','세종특별자치시':'세종','경기도':'경기','강원특별자치도':'강원','강원도':'강원','충청북도':'충북','충청남도':'충남','전북특별자치도':'전북','전라북도':'전북','전라남도':'전남','경상북도':'경북','경상남도':'경남','제주특별자치도':'제주','전남광주통합특별시':'전남광주'};
+const ANA_DEF=()=>({caseNo:'',court:'',cat:'apt',sgg:'',emd:'',name:'',jimok:'',area:'',apsl:'',minp:'',fails:'0',bidDay:'',checked:false,rights:{}});
+let ANA={f:ANA_DEF(),sggs:null,item:null,res:null,loading:false,err:''};
+try{const v=JSON.parse(localStorage.getItem('rp_ana')||'null');if(v)ANA.f={...ANA_DEF(),...v,rights:v.rights||{}}}catch(e){}
+function anaSave(){try{localStorage.setItem('rp_ana',JSON.stringify(ANA.f))}catch(e){}}
+async function anaLoadSgg(){if(ANA.sggs||ANA.sggLoading)return;ANA.sggLoading=true;try{const r=await fetch('scripts/sgg-codes.json');ANA.sggs=Object.keys(await r.json())}catch(e){ANA.sggs=[]}if(route().startsWith('analyze'))render()}
+// "대구광역시 수성구 범어동 123-4 ○○아파트" → {sgg:'대구 수성구', emd:'범어동'}
+function anaParseAddr(addr){
+  const t=String(addr||'').replace(/[(),]/g,' ').split(/\s+/).filter(Boolean);if(!t.length||!ANA.sggs)return {};
+  const sd=ANA_SIDO[t[0]]||t[0];let sgg='',i=1;
+  for(const n of [3,2,1]){const k=[sd,...t.slice(1,n)].join(' ');if(ANA.sggs.includes(k)){sgg=k;i=n;break}}
+  const emd=t.slice(i).find(w=>/(동|읍|면|가)$/.test(w)&&!/^\d/.test(w))||'';
+  return {sgg,emd};
+}
+function anaApplyAddr(v){const a=anaParseAddr(v);if(!a.sgg){toast('주소에서 시·군·구를 찾지 못했어요. 직접 골라 주세요');return}ANA.f.sgg=a.sgg;if(a.emd)ANA.f.emd=a.emd;anaSave();const sg=$('#anaForm [name=sgg]'),em=$('#anaForm [name=emd]');if(sg)sg.value=a.sgg;if(em&&a.emd)em.value=a.emd;toast(`${a.sgg}${a.emd?' '+a.emd:''}(으)로 골랐어요`)}
+document.addEventListener('paste',e=>{if(e.target.id==='anaAddr')setTimeout(()=>anaApplyAddr(e.target.value),0)});
+function anaRights(f){
+  if(!f.checked) return {level:'unknown',why:['매각물건명세서를 확인한 뒤 권리 항목을 체크하면 위험도를 계산해요']};
+  const on=ANA_RIGHTS.filter(r=>f.rights[r[0]]);
+  if(!on.length) return {level:'low',why:['입력하신 매각물건명세서 내용상 큰 권리 문제는 없어요']};
+  return {level:on.some(r=>r[2]==='high')?'high':'mid',why:on.map(r=>r[3])};
+}
+const anaNum=v=>{const n=Number(String(v||'').replace(/[,\s]/g,''));return Number.isFinite(n)&&n>0?n:null};
+function anaItem(){
+  const f=ANA.f, cl=ANA_CATS.find(c=>c[0]===f.cat)?.[1]||'';
+  const title=[f.name||[f.sgg,f.emd].filter(Boolean).join(' '),cl].filter(Boolean).join(' · ');
+  return {id:'ana-'+(f.caseNo||'x').replace(/\W/g,''),title:(f.caseNo?f.caseNo+' ':'')+title,cat:f.cat,area:anaNum(f.area),bldArea:anaNum(f.area),
+    apsl:(anaNum(f.apsl)||0)*1e4,minp:(anaNum(f.minp)||0)*1e4,fails:+f.fails||0,compare:ANA.res?.compare||null,_rights:anaRights(f),_noAI:true};
+}
+async function anaRun(){
+  const f=ANA.f;
+  const miss=[!f.sgg&&'시·군·구',!anaNum(f.area)&&'면적',!anaNum(f.apsl)&&'감정가',!anaNum(f.minp)&&'최저매각가격'].filter(Boolean);
+  if(miss.length){ANA.err=miss.join(', ')+'을(를) 넣어 주세요';render();return}
+  if(anaNum(f.minp)>anaNum(f.apsl)*1.2){ANA.err='최저매각가격이 감정가보다 커요. 금액 단위(만원)를 확인해 주세요';render();return}
+  ANA.err='';ANA.loading=true;ANA.res=null;anaSave();render();
+  try{
+    if(!CFG.supabaseUrl) throw new Error('서버 설정이 없어요');
+    const r=await fetch(`${CFG.supabaseUrl}/functions/v1/rtms-compare`,{method:'POST',headers:{'content-type':'application/json',apikey:CFG.supabaseAnonKey,Authorization:'Bearer '+(AUTH.session?.access_token||CFG.supabaseAnonKey)},
+      body:JSON.stringify({cat:f.cat,sgg:f.sgg,emd:f.emd,name:f.name,jimok:f.jimok,area:anaNum(f.area),apsl:anaNum(f.apsl)*1e4,minp:anaNum(f.minp)*1e4})});
+    const j=await r.json().catch(()=>({}));
+    if(r.status===404) throw new Error('실거래 비교 서버 기능(rtms-compare)이 아직 배포되지 않았어요');
+    if(!r.ok) throw new Error(j.message||'실거래를 불러오지 못했어요');
+    ANA.res=j;
+  }catch(e){ANA.res={compare:{skip:e.message}};}
+  ANA.loading=false;ANA.item=anaItem();render();
+  setTimeout(()=>$('#anaOut')?.scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+function anaFromQuery(){
+  const q=route().split('?')[1];if(!q)return false;
+  const p=new URLSearchParams(q),f={...ANA_DEF()};
+  const won=k=>{const n=anaNum(p.get(k));return n?String(Math.round(n/1e4)):''};
+  f.caseNo=p.get('case')||'';f.court=p.get('court')||'';f.cat=ANA_CATS.some(c=>c[0]===p.get('cat'))?p.get('cat'):'apt';
+  f.name=p.get('name')||'';f.area=p.get('area')||'';f.apsl=won('apsl');f.minp=won('minp');f.fails=p.get('fails')||'0';f.bidDay=p.get('day')||'';
+  f.addr=p.get('addr')||'';
+  ANA.f=f;ANA.res=null;ANA.item=null;ANA.pendingAddr=f.addr;ANA.autoRun=true;
+  history.replaceState(null,'','#analyze');return true;
+}
+function viewAnalyze(){
+  anaFromQuery();
+  if(!ANA.sggs){anaLoadSgg();return `<section class="block">${secHead('법원경매 물건, 사건번호로 분석','경매 물건 분석기')}<div class="empty">불러오는 중이에요…</div></section>`}
+  if(ANA.pendingAddr){const a=anaParseAddr(ANA.pendingAddr);ANA.f.sgg=a.sgg||ANA.f.sgg;ANA.f.emd=a.emd||ANA.f.emd;ANA.pendingAddr=null}
+  if(ANA.autoRun){ANA.autoRun=false;if(ANA.f.sgg&&ANA.f.area&&ANA.f.apsl&&ANA.f.minp)setTimeout(anaRun,30)}
+  const f=ANA.f, grp={};ANA.sggs.forEach(k=>{const s=k.split(' ')[0];(grp[s]=grp[s]||[]).push(k)});
+  const inp=(k,label,ph='',unit='',extra='')=>`<label class="cf"><span>${label}</span><div class="cin"><input name="${k}" value="${esc(String(f[k]??''))}" placeholder="${esc(ph)}" autocomplete="off" ${extra}>${unit?`<i>${unit}</i>`:''}</div>${unit==='만원'?`<small data-anah="${k}">${anaNum(f[k])?M(anaNum(f[k])*1e4):''}</small>`:''}</label>`;
+  const isLand=f.cat==='land', named=['apt','offi','rh'].includes(f.cat);
+  const it=ANA.item;
+  return `<section class="block ana">${secHead('법원경매 물건 · 실거래로 바로 분석','경매 물건 분석기')}
+  <nav class="subnav" aria-label="경매 분석 메뉴"><a href="#analyze" aria-current="page">🔎 경매 물건 분석기</a><a href="#calc">🧮 수익률 계산기</a><a href="#market">📊 공매 시장 리포트</a></nav>
+  <div class="ana-how"><b>이렇게 써요</b><ol><li><a href="https://www.courtauction.go.kr" target="_blank" rel="noopener">대법원 법원경매정보</a>에서 마음에 드는 물건을 찾아요</li><li>사건번호·주소·면적·감정가·최저가를 아래에 옮겨 적어요</li><li>매각물건명세서를 보고 권리 항목을 체크하면 끝이에요</li></ol><p class="note">리얼픽은 법원 사이트에 접속하거나 그 정보를 저장하지 않아요. 입력하신 값과 국토부 실거래가 공개 자료로만 계산해요.</p></div>
+  <form id="anaForm" class="panel ana-form" autocomplete="off" onsubmit="return false">
+    <h3>1. 사건 정보</h3>
+    <div class="ana-g3">${inp('caseNo','사건번호','예: 2025타경12345')}${inp('court','법원 (선택)','예: 대구지방법원')}${inp('bidDay','매각기일 (선택)','예: 2026-12-10')}</div>
+    <h3>2. 물건 정보</h3>
+    <div class="ana-g3">
+      <label class="cf"><span>물건 종류</span><div class="cin"><select name="cat">${ANA_CATS.map(([k,l])=>`<option value="${k}" ${k===f.cat?'selected':''}>${l}</option>`).join('')}</select></div></label>
+      <label class="cf"><span>시·군·구</span><div class="cin"><select name="sgg"><option value="">선택해 주세요</option>${Object.entries(grp).map(([s,a])=>`<optgroup label="${esc(s)}">${a.map(k=>`<option value="${esc(k)}" ${k===f.sgg?'selected':''}>${esc(k)}</option>`).join('')}</optgroup>`).join('')}</select></div></label>
+      ${inp('emd','읍·면·동','예: 범어동')}
+    </div>
+    <label class="cf ana-addr"><span>주소 붙여넣기 (선택)</span><div class="cin"><input id="anaAddr" placeholder="법원 사이트의 소재지를 붙여 넣으면 시·군·구와 동을 자동으로 골라요"></div></label>
+    <div class="ana-g3">
+      ${named?inp('name','단지·건물 이름','예: 범어자이'):isLand?`<label class="cf"><span>지목</span><div class="cin"><select name="jimok">${ANA_JIMOK.map(j=>`<option value="${j}" ${j===f.jimok?'selected':''}>${j||'모름'}</option>`).join('')}</select></div></label>`:inp('name','건물 이름 (선택)','')}
+      ${inp('area',isLand?'토지 면적':['apt','offi','rh'].includes(f.cat)?'전용 면적':'건물 면적','예: 84.9','㎡','inputmode="decimal"')}
+      <label class="cf"><span>유찰 횟수</span><div class="cin"><select name="fails">${[0,1,2,3,4,5,6,7,8].map(n=>`<option value="${n}" ${+f.fails===n?'selected':''}>${n?n+'회':'없음 (신건)'}</option>`).join('')}</select></div></label>
+    </div>
+    <div class="ana-g3">${inp('apsl','감정가','예: 52000','만원','inputmode="numeric"')}${inp('minp','최저매각가격','예: 36400','만원','inputmode="numeric"')}<div class="cf ana-ratio"><span>최저가율</span><b>${anaNum(f.apsl)&&anaNum(f.minp)?Math.round(anaNum(f.minp)/anaNum(f.apsl)*100)+'%':'-'}</b></div></div>
+    <h3>3. 권리 체크 <span class="note" style="font-weight:500">매각물건명세서·현황조사서를 보고 해당하는 것만</span></h3>
+    <label class="ana-ok"><input type="checkbox" name="checked" ${f.checked?'checked':''}> 매각물건명세서를 확인했어요</label>
+    <div class="ana-rights ${f.checked?'':'off'}">${ANA_RIGHTS.map(([k,l,lv])=>`<label class="lv-${lv}"><input type="checkbox" data-anar="${k}" ${f.rights[k]?'checked':''} ${f.checked?'':'disabled'}> ${l}</label>`).join('')}</div>
+    ${ANA.err?`<p class="ana-err">${esc(ANA.err)}</p>`:''}
+    <div class="ana-act"><button type="button" class="btn primary" id="anaGo" ${ANA.loading?'disabled':''}>${ANA.loading?'실거래 찾는 중…':'분석하기'}</button><button type="button" class="btn" id="anaReset">새로 입력</button></div>
+  </form>
+  <div id="anaOut">${it?anaOutHtml(it):''}</div>
+  <div class="ana-ext panel"><div><b>🧩 크롬 확장 프로그램 (준비 중)</b><p class="note">법원경매 사이트에서 물건을 볼 때 "리얼픽으로 분석" 버튼이 떠서, 위 칸을 자동으로 채워 줘요.</p></div></div>
+  </section>`;
+}
+function anaOutHtml(it){
+  const c=it.compare&&!it.compare.skip?it.compare:null;
+  return `<div class="ana-out"><h2 class="mk-h">분석 결과 <span class="note" style="font-weight:600">${esc(it.title)}</span></h2>
+  ${aucReportHtml(it)}
+  <div class="panel ana-deals"><h3>비교에 쓴 주변 실거래</h3>
+  ${c?`<p class="note">${esc(c.basis)} · ㎡당 중간값 ${M(c.perM2)} × ${c.area}㎡ = 추정 시세 ${M(c.est)}${c.apslVsEst!=null?` · 감정가는 시세보다 ${pctTxt(c.apslVsEst)}`:''}</p>
+   <div class="mk-tbl ana-tbl"><div class="mk-tr mk-th"><span>거래일</span><span>위치·이름</span><span>면적</span><span>거래가</span></div>${c.samples.map(d=>`<div class="mk-tr"><span class="note">${esc(d.date)}</span><span>${esc(d.dong)}${d.tag?' · '+esc(d.tag):''}</span><span class="num">${d.area}㎡</span><span class="num"><b>${M(d.amount)}</b></span></div>`).join('')}</div>`
+   :`<p class="note">${esc(it.compare?.skip||'실거래 비교 결과가 없어요')}</p>`}
+  <p class="note" style="margin-top:8px">출처: 국토교통부 실거래가 공개 자료 (지분·해제 거래 제외)</p></div></div>`;
+}
+document.addEventListener('input',e=>{
+  const fm=e.target.closest('#anaForm');if(!fm)return;
+  if(e.target.id==='anaAddr')return;
+  const n=e.target.name;if(!n||!(n in ANA.f)||e.target.type==='checkbox')return;
+  ANA.f[n]=e.target.value;anaSave();
+  const h=document.querySelector(`[data-anah="${n}"]`);if(h)h.textContent=anaNum(e.target.value)?M(anaNum(e.target.value)*1e4):'';
+  const rt=document.querySelector('.ana-ratio b');if(rt)rt.textContent=anaNum(ANA.f.apsl)&&anaNum(ANA.f.minp)?Math.round(anaNum(ANA.f.minp)/anaNum(ANA.f.apsl)*100)+'%':'-';
+});
+document.addEventListener('change',e=>{
+  if(!e.target.closest('#anaForm'))return;
+  if(e.target.id==='anaAddr'){anaApplyAddr(e.target.value);return}
+  if(e.target.name==='cat'||e.target.name==='sgg'||e.target.name==='fails'||e.target.name==='jimok'){ANA.f[e.target.name]=e.target.value;anaSave();if(e.target.name==='cat')render();return}
+  if(e.target.name==='checked'){ANA.f.checked=e.target.checked;anaSave();render();return}
+  const r=e.target.dataset.anar;if(r){ANA.f.rights[r]=e.target.checked;anaSave()}
+});
+document.addEventListener('click',e=>{
+  if(e.target.closest('#anaGo')){anaRun();return}
+  if(e.target.closest('#anaReset')){ANA.f=ANA_DEF();ANA.item=null;ANA.res=null;ANA.err='';anaSave();render();return}
+});
 /* ================= 공매 시장 리포트 (현재 진행 물건 기준) ================= */
 let MK={sido:'전체',cat:'전체'};
 const MK_FB=[['유찰 없음',0,0],['1회',1,1],['2회',2,2],['3회',3,3],['4회',4,4],['5회',5,5],['6~9회',6,9],['10회+',10,999]];
@@ -2587,7 +2741,7 @@ function viewMarket(){
   if(rows.length&&rows.length<30) lines.push(`물건 수가 ${rows.length}건으로 적어서 통계는 참고만 해 주세요.`);
   const kpi=(t,v,s)=>`<div class="mk-kpi"><span>${t}</span><b>${v}</b><small>${s}</small></div>`;
   return `<section class="block mk">${secHead('온비드 공매 · 낙찰 결과와 진행 물건','공매 시장 리포트')}
-  <nav class="subnav" aria-label="공매 메뉴"><a href="#auctions">물건 목록</a><a href="#market" aria-current="page">📊 시장 리포트</a><a href="#calc">🧮 수익률 계산기</a></nav>
+  <nav class="subnav" aria-label="공매 메뉴"><a href="#auctions">물건 목록</a><a href="#market" aria-current="page">📊 시장 리포트</a><a href="#analyze">🔎 경매 물건 분석기</a><a href="#calc">🧮 수익률 계산기</a></nav>
   <div class="mk-filter"><select id="mkSido" aria-label="지역"><option value="전체">전국 (${all.length.toLocaleString()})</option>${sidos.map(([s,n])=>`<option value="${esc(s)}" ${s===MK.sido?'selected':''}>${esc(s)} (${n.toLocaleString()})</option>`).join('')}</select>
     <div class="tabs">${AUC_CATS.map(([k])=>`<button type="button" data-mkcat="${k}" aria-pressed="${k===MK.cat}">${k}</button>`).join('')}</div></div>
   ${!rows.length?'<div class="empty">조건에 맞는 진행 중 물건이 없어요.</div>':`
@@ -2671,7 +2825,7 @@ document.addEventListener('input',e=>{const f=e.target.closest('#calcForm');if(!
 document.addEventListener('change',e=>{if(e.target.closest('#calcForm')&&e.target.tagName==='SELECT'){CALC[e.target.name]=e.target.value;const o=$('#calcOut');if(o)o.innerHTML=calcOutHtml();calcHints()}});
 document.addEventListener('click',e=>{
   const x=e.target.closest('[data-calcexit]');if(x){CALC.exit=x.dataset.calcexit;render();return}
-  const f=e.target.closest('[data-calcfrom]');if(f){const it=AUC.items.find(i=>i.id===f.dataset.calcfrom);if(it){CALC={...CALC_DEF(),...calcPrefill(it)}}return}
+  const f=e.target.closest('[data-calcfrom]');if(f){const it=AUC.items.find(i=>i.id===f.dataset.calcfrom)||(ANA.item?.id===f.dataset.calcfrom?ANA.item:null);if(it){CALC={...CALC_DEF(),...calcPrefill(it)}}return}
   const ai=e.target.closest('[data-aucai]');if(ai){loadAucAI(ai.dataset.aucai,true);return}
 });
 
@@ -2917,7 +3071,7 @@ function viewPrivacy(){return legalPage('개인정보처리방침',`
   <h2>10. 방침 변경</h2><p>이 방침을 바꿀 때는 시행 7일 전부터 서비스 화면에 알립니다.</p>`)}
 function footerInfo(){
   const c=COMPANY, parts=[['상호',c.name],['대표',c.ceo],['사업자등록번호',c.bizNo],['통신판매업 신고',c.mailOrderNo],['주소',c.address],['이메일',c.email],['전화',c.phone]].filter(([,v])=>v);
-  return `<nav><a href="#market">공매 시장 리포트</a><a href="#calc">수익률 계산기</a><a href="#terms">이용약관</a><a href="#privacy"><b>개인정보처리방침</b></a><a href="#insight">전문가 인사이트</a><a href="#support">정부지원금</a><a href="#auctions">경매·공매</a></nav>
+  return `<nav><a href="#analyze">경매 물건 분석기</a><a href="#market">공매 시장 리포트</a><a href="#calc">수익률 계산기</a><a href="#terms">이용약관</a><a href="#privacy"><b>개인정보처리방침</b></a><a href="#insight">전문가 인사이트</a><a href="#support">정부지원금</a><a href="#auctions">경매·공매</a></nav>
     ${parts.length?`<div class="bizinfo">${parts.map(([k,v])=>`<span>${k} ${esc(v)}</span>`).join('')}</div>`:''}
     <div>리얼픽은 매물 검색, 경매·공매와 실거래가 비교, 지원사업 공고, 금리 정보를 한곳에서 제공합니다. 매물은 등록 심사를 거친 개업공인중개사가 올리며, 정책 해설은 정책브리핑(공공누리 제1유형) 자료를 AI가 요약한 참고용입니다. 공매·실거래·공고 정보는 공공기관 공개 자료이고, 시세 추정과 AI 답변은 참고용입니다.</div>`;
 }
@@ -3580,6 +3734,7 @@ function render(){
   else if(r==='rates'){html=viewRates();nav='insight'}
   else if(r==='calc'){html=viewCalc();nav='auctions';AFTER.push(calcHints)}
   else if(r==='market'){html=viewMarket();nav='auctions'}
+  else if(r==='analyze'||r.startsWith('analyze?')){html=viewAnalyze();nav='auctions'}
   else if(r==='support'){html=viewSupport();nav='insight'}
   else if(r.startsWith('notice-')){html=viewNotice(r.slice(7));nav='insight'}
   else {html=viewHome();nav='home'}
