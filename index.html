@@ -2628,6 +2628,7 @@ function anaFromQuery(){
   f.caseNo=p.get('case')||'';f.court=p.get('court')||'';f.cat=ANA_CATS.some(c=>c[0]===p.get('cat'))?p.get('cat'):'apt';
   f.name=p.get('name')||'';f.area=p.get('area')||'';f.apsl=won('apsl');f.minp=won('minp');f.fails=p.get('fails')||'0';f.bidDay=p.get('day')||'';
   f.addr=p.get('addr')||'';
+  f.jimok=ANA_JIMOK.includes(p.get('jimok')||'')?p.get('jimok'):'';
   if(p.get('embed')){ANA.embed=true;document.documentElement.classList.add('embed')}
   ANA.f=f;ANA.res=null;ANA.item=null;ANA.pendingAddr=f.addr;ANA.autoRun=true;
   history.replaceState(null,'','#analyze');return true;
