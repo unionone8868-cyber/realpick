@@ -485,6 +485,9 @@ a.acard:hover .athumb img{transform:scale(1.04)}
 @media(max-width:640px){.joinbar{margin:10px 0 0;flex-wrap:wrap;gap:2px 8px}.joinbar span{flex-basis:100%;order:3}}
 
 /* 리얼픽 분석 리포트 */
+html.embed header.top,html.embed .tabbar,html.embed footer,html.embed #fab,html.embed .joinbar,html.embed .ana-how,html.embed .ana-ext,html.embed .ana .subnav{display:none!important}
+html.embed body{padding-bottom:0!important}html.embed .ana{padding-top:8px}html.embed .ana-out{margin-top:0}
+.ana-fold{margin-top:14px}.ana-fold>summary{cursor:pointer;font-weight:800;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);list-style:none}.ana-fold>summary::before{content:"✎ ";color:var(--accent)}.ana-fold[open]>summary{margin-bottom:10px}
 .ana-how{background:var(--accent-soft);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;font-size:14px}.ana-how ol{margin:6px 0 4px;padding-left:20px;display:grid;gap:3px}.ana-how a{color:var(--accent);font-weight:700}
 .ana-form{padding:20px}.ana-form h3{font-size:15px;font-weight:800;margin:18px 0 10px}.ana-form h3:first-child{margin-top:0}
 .ana-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:10px}.ana-addr{margin-bottom:10px}.ana-addr input{width:100%}
@@ -2625,6 +2628,7 @@ function anaFromQuery(){
   f.caseNo=p.get('case')||'';f.court=p.get('court')||'';f.cat=ANA_CATS.some(c=>c[0]===p.get('cat'))?p.get('cat'):'apt';
   f.name=p.get('name')||'';f.area=p.get('area')||'';f.apsl=won('apsl');f.minp=won('minp');f.fails=p.get('fails')||'0';f.bidDay=p.get('day')||'';
   f.addr=p.get('addr')||'';
+  if(p.get('embed')){ANA.embed=true;document.documentElement.classList.add('embed')}
   ANA.f=f;ANA.res=null;ANA.item=null;ANA.pendingAddr=f.addr;ANA.autoRun=true;
   history.replaceState(null,'','#analyze');return true;
 }
@@ -2640,6 +2644,8 @@ function viewAnalyze(){
   return `<section class="block ana">${secHead('법원경매 물건 · 실거래로 바로 분석','경매 물건 분석기')}
   <nav class="subnav" aria-label="경매 분석 메뉴"><a href="#analyze" aria-current="page">🔎 경매 물건 분석기</a><a href="#calc">🧮 수익률 계산기</a><a href="#market">📊 공매 시장 리포트</a></nav>
   <div class="ana-how"><b>이렇게 써요</b><ol><li><a href="https://www.courtauction.go.kr" target="_blank" rel="noopener">대법원 법원경매정보</a>에서 마음에 드는 물건을 찾아요</li><li>사건번호·주소·면적·감정가·최저가를 아래에 옮겨 적어요</li><li>매각물건명세서를 보고 권리 항목을 체크하면 끝이에요</li></ol><p class="note">리얼픽은 법원 사이트에 접속하거나 그 정보를 저장하지 않아요. 입력하신 값과 국토부 실거래가 공개 자료로만 계산해요.</p></div>
+  ${ANA.embed&&it?'<div id="anaOut">'+anaOutHtml(it)+'</div>':''}
+  ${ANA.embed?`<details class="ana-fold" ${it?'':'open'}><summary>${it?'입력값 고치기 · 권리 체크':'입력값 확인'}</summary>`:''}
   <form id="anaForm" class="panel ana-form" autocomplete="off" onsubmit="return false">
     <h3>1. 사건 정보</h3>
     <div class="ana-g3">${inp('caseNo','사건번호','예: 2025타경12345')}${inp('court','법원 (선택)','예: 대구지방법원')}${inp('bidDay','매각기일 (선택)','예: 2026-12-10')}</div>
@@ -2662,7 +2668,8 @@ function viewAnalyze(){
     ${ANA.err?`<p class="ana-err">${esc(ANA.err)}</p>`:''}
     <div class="ana-act"><button type="button" class="btn primary" id="anaGo" ${ANA.loading?'disabled':''}>${ANA.loading?'실거래 찾는 중…':'분석하기'}</button><button type="button" class="btn" id="anaReset">새로 입력</button></div>
   </form>
-  <div id="anaOut">${it?anaOutHtml(it):''}</div>
+  ${ANA.embed?'</details>':`<div id="anaOut">${it?anaOutHtml(it):''}</div>`}
+  ${ANA.embed?`<p class="note" style="margin-top:12px">리얼픽이 입력값과 국토부 실거래가로 계산한 참고 자료예요. <a href="#analyze" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">리얼픽에서 크게 보기 ↗</a></p>`:''}
   <div class="ana-ext panel"><div><b>🧩 크롬 확장 프로그램 (준비 중)</b><p class="note">법원경매 사이트에서 물건을 볼 때 "리얼픽으로 분석" 버튼이 떠서, 위 칸을 자동으로 채워 줘요.</p></div></div>
   </section>`;
 }
