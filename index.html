@@ -2508,7 +2508,7 @@ function aucReportHtml(it){
     <div class="rpt-tiles">
       <div><span>주변 시세 추정</span><b class="num">${a.est?M(a.est):'-'}</b><em>${a.disc!=null?`최저가 ${pctTxt(a.disc)}`:'비교 불가'}</em></div>
       <div><span>권리 위험</span><b class="rk-${rc}">${rk}</b><em>${esc(a.rights.why[0]||'')}</em></div>
-      <div class="hl"><span>시세 기반 참고 입찰가</span><b class="num">${a.fair?`${M(a.fair.lo).replace('원','')}~${M(a.fair.hi)}`:'-'}</b><em>${a.fair?(a.fair.tight?'최저가가 이미 시세의 88%를 넘어요':'시세의 78~88% 구간'):'시세 정보가 필요해요'}</em></div>
+      <div class="hl"><span>시세 기반 참고 입찰가</span><b class="num">${a.fair?(a.fair.lo===a.fair.hi?M(a.fair.lo):`${M(a.fair.lo).replace('원','')}~${M(a.fair.hi)}`):'-'}</b><em>${a.fair?(a.fair.tight?'최저가가 이미 시세의 88%를 넘어 최저가 입찰 기준이에요':'시세의 78~88% 구간'):'시세 정보가 필요해요'}</em></div>
       <div><span>예상 순수익 <small>2년 보유 후 매도</small></span><b class="num ${sim&&sim.profit<0?'rk-hot':''}">${sim?M(sim.profit):'-'}</b><em>${sim?`내 돈 대비 ${pctTxt(sim.roi)}`:'시세 정보가 필요해요'}</em></div>
     </div>
     <div class="rpt-pc"><div class="pro"><h3>좋은 점</h3>${a.pros.length?`<ul>${a.pros.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:'<p class="note">눈에 띄는 장점이 없어요</p>'}</div>
