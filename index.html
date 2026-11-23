@@ -1293,6 +1293,7 @@ const NAVER_RESULT=new URLSearchParams(location.search).get('naver');
 if(NAVER_RESULT){history.replaceState(null,'',location.pathname+location.hash)}
 async function startOAuth(provider,btn){
   const back=location.origin+location.pathname;
+  try{sessionStorage.setItem('rp_oauth',['login','signup','join'].includes(route())?'#home':(location.hash||'#home'))}catch(e){}
   if(provider==='naver'){location.href=`${CFG.supabaseUrl}/functions/v1/naver-auth?redirect=${encodeURIComponent(back)}`;return}
   btn.disabled=true;
   const {error}=await sb.auth.signInWithOAuth({provider,options:{redirectTo:back}});
@@ -1382,12 +1383,16 @@ async function initAuth(){
   AUTH.session=session; await loadMe(); AUTH.ready=true; renderHeader(); render();
   if(NAVER_RESULT==='exists'){location.hash='#login';setTimeout(()=>{const m=$('#authMsg');if(m)m.textContent='이 이메일은 이미 다른 방법(이메일·카카오·구글)으로 가입되어 있어요. 원래 쓰던 방법으로 로그인해 주세요.'},300)}
   else if(NAVER_RESULT&&NAVER_RESULT!=='ok'){location.hash='#login';setTimeout(()=>{const m=$('#authMsg');if(m)m.textContent=NAVER_RESULT==='noemail'?'네이버에서 이메일 제공에 동의해야 가입할 수 있어요.':NAVER_RESULT==='cancel'?'네이버 로그인을 취소했어요.':'네이버 로그인에 실패했어요. 잠시 뒤 다시 시도해 주세요.'},300)}
+  // 간편로그인에서 막 돌아온 경우: 처음 가입이면 바로 가입 마무리 화면, 아니면 원래 보던 화면으로
+  let oauthBack=null;try{oauthBack=sessionStorage.getItem('rp_oauth');sessionStorage.removeItem('rp_oauth')}catch(e){}
+  if(oauthBack&&session){ if(needsConsent()) location.hash='#join'; else if(oauthBack!==location.hash) location.hash=oauthBack; }
   if(PW_RECOVERY&&session){ location.hash='#my'; setTimeout(()=>{const f=$('#pwForm');if(f){f.scrollIntoView({block:'center'});f.pw.focus()}toast('새 비밀번호를 정해 주세요')},400) }
   sb.auth.onAuthStateChange((ev,s)=>{
     setTimeout(async()=>{
       AUTH.session=s; await loadMe(); renderHeader(); refreshQuota(); if(ev==='SIGNED_OUT') chatHistory=[];
       if(ev==='PASSWORD_RECOVERY'){location.hash='#my';setTimeout(()=>{const f=$('#pwForm');if(f){f.scrollIntoView({block:'center'});f.pw.focus()}toast('새 비밀번호를 정해 주세요')},400);return}
-      if(ev==='SIGNED_IN' && ['home','login','signup'].includes(route())) location.hash=(s?.user?.user_metadata?.signup_type==='agent'&&!AUTH.agent)?'#agent':'#my'; else softRender();
+      if(ev==='SIGNED_IN' && needsConsent() && ['home','login','signup'].includes(route())) location.hash='#join';
+      else if(ev==='SIGNED_IN' && ['home','login','signup'].includes(route())) location.hash=(s?.user?.user_metadata?.signup_type==='agent'&&!AUTH.agent)?'#agent':'#my'; else softRender();
       if(ev==='SIGNED_OUT') loadMarket();
     },0);
   });
