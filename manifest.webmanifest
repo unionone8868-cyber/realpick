@@ -1,0 +1,25 @@
+{
+  "name": "리얼픽 - 공매·매물·실거래 한눈에",
+  "short_name": "리얼픽",
+  "description": "공매 물건과 주변 실거래 시세를 비교하고, 매물·분양·정책 정보를 한곳에서 보는 부동산 플랫폼",
+  "lang": "ko",
+  "id": "./",
+  "start_url": "./?source=app#home",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F1B3D",
+  "theme_color": "#0F1B3D",
+  "categories": ["business", "finance", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "공매 물건", "short_name": "공매", "url": "./?source=app#auctions", "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "지도 검색", "short_name": "지도", "url": "./?source=app#listings", "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }] },
+    { "name": "AI 상담", "short_name": "AI 상담", "url": "./?source=app&ai=1#home", "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }] }
+  ]
+}
