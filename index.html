@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<!-- 정식 오픈 전까지 검색엔진 노출 막기 (오픈할 때 아래 한 줄 삭제) -->
+<meta name="robots" content="noindex, nofollow">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("rp_theme")||"light"}catch(e){document.documentElement.dataset.theme="light"}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="매물 검색, 실거래가·AI 추정 시세 비교, 커뮤니티와 전문가 인사이트를 한곳에서 제공하는 부동산 플랫폼 리얼픽">
@@ -780,7 +782,7 @@ footer{background:var(--sunk);border-top:0}
   .tabbar svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .tabbar a[aria-current="page"]{color:var(--accent)}
   body{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}
-  .fab{bottom:calc(80px + env(safe-area-inset-bottom,0px));right:14px;width:54px;height:54px;padding:0;border-radius:50%;font-size:0;display:grid;place-items:center}
+  .fab{bottom:calc(84px + env(safe-area-inset-bottom,0px));right:10px;width:46px;height:46px;opacity:.94;padding:0;border-radius:50%;font-size:0;display:grid;place-items:center}
   .fab::before{content:"AI";font-size:16px;font-weight:900;letter-spacing:-.02em}
   .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
   .tabs::-webkit-scrollbar{display:none}
@@ -946,27 +948,17 @@ function ddayLabel(n){
 }
 const ST_NAME={all:'전체',open:'진행중',soon:'마감임박',upcoming:'접수예정',closed:'마감',budget:'예산 소진 시까지'};
 async function loadFeed(){
-  try{
-    const r=await fetch('notices.json',{cache:'no-store'});
-    if(!r.ok) throw 0;
-    FEED=await r.json();
-  }catch(e){ FEED={updatedAt:null,items:[]}; }
-  try{
-    const r=await fetch('rates.json',{cache:'no-store'});
-    if(r.ok){const j=await r.json(); if(j.series&&j.series.length) RATES=j;}
-  }catch(e){}
-  try{
-    const r=await fetch('insight.json',{cache:'no-store'});
-    if(r.ok){const j=await r.json(); if(Array.isArray(j.items)) INS={...j,items:j.items.filter(i=>!i.hide),loaded:true};}
-  }catch(e){}
-  try{
-    const r=await fetch('housing.json',{cache:'no-store'});
-    if(r.ok){const j=await r.json(); if(Array.isArray(j.items)) HOUSING={...j,loaded:true};}
-  }catch(e){} HOUSING.loaded=true;
-  try{
-    const r=await fetch('deals.json',{cache:'no-store'});
-    if(r.ok){const j=await r.json(); if(Array.isArray(j.top)) DEALS=j;}
-  }catch(e){}
+  // 모든 자료를 동시에 받고, 작은 파일이 오면 먼저 그린 뒤 큰 공고 파일(notices)이 오면 다시 그린다
+  const get=f=>fetch(f,{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
+  const pN=get('notices.json'), pR=get('rates.json'), pI=get('insight.json'), pH=get('housing.json'), pD=get('deals.json');
+  const [rj,ij,hj,dj]=await Promise.all([pR,pI,pH,pD]);
+  if(rj&&rj.series&&rj.series.length) RATES=rj;
+  if(ij&&Array.isArray(ij.items)) INS={...ij,items:ij.items.filter(i=>!i.hide),loaded:true};
+  if(hj&&Array.isArray(hj.items)) HOUSING={...hj,loaded:true}; HOUSING.loaded=true;
+  if(dj&&Array.isArray(dj.top)) DEALS=dj;
+  render();
+  const nj=await pN;
+  FEED=nj&&Array.isArray(nj.items)?nj:{updatedAt:null,items:[]};
   render();
 }
 
@@ -1452,7 +1444,7 @@ function filteredMarket(){
   return MARKET.items.filter(l=>(LF.kind==='전체'||l.kind===LF.kind)&&(LF.deal==='전체'||l.deal_type===LF.deal)&&(LF.sido==='전체'||l.sido===LF.sido)&&(!sidos||sidos.includes(l.sido))&&(!LF.loss||lossInfo(l))&&(!words.length||textHit(l.title+' '+l.address+' '+l.sigungu+' '+(l.agent?.office_name||''),words)));
 }
 let MKT={loaded:false,data:null};
-async function loadMkt(){if(MKT.loading||MKT.loaded)return;MKT.loading=true;try{const r=await fetch('market.json',{cache:'no-store'});if(r.ok)MKT.data=await r.json()}catch(e){}MKT.loaded=true;if(location.hash==='#market')render()}
+async function loadMkt(){if(MKT.loading||MKT.loaded)return;MKT.loading=true;try{const r=await fetch('market.json',{cache:'no-cache'});if(r.ok)MKT.data=await r.json()}catch(e){}MKT.loaded=true;if(location.hash==='#market')render()}
 function mktSel(){
   const d=MKT.data;if(!d||!d.months)return null;
   const cats=AUC_CATS.find(c=>c[0]===MK.cat)?.[1];
@@ -1971,7 +1963,7 @@ const textHit=(hay,words)=>words.every(w=>hay.includes(w));
 /* ================= 경매·공매 (온비드 + 실거래 비교) ================= */
 let AUC={updatedAt:null,items:[],note:'',loaded:false};
 async function loadAuctions(){
-  try{const r=await fetch('auctions.json',{cache:'no-store'});if(r.ok){const j=await r.json();if(Array.isArray(j.items))AUC={...j,loaded:true}}}catch(e){}
+  try{const r=await fetch('auctions.json',{cache:'no-cache'});if(r.ok){const j=await r.json();if(Array.isArray(j.items))AUC={...j,loaded:true}}}catch(e){}
   AUC.loaded=true; softRender();
 }
 function onbidUrl(it){
