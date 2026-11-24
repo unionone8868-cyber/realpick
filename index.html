@@ -1055,7 +1055,7 @@ function viewHome(){
   if(sb) AFTER.push(()=>loadHomePosts('전체'));
   const latest=[...FEED.items].filter(n=>statusOf(n)!=='closed').sort((a,b)=>b.creatPnttm.localeCompare(a.creatPnttm)).slice(0,4);
   const live=AUC.items.filter(i=>aucDday(i)[1]!=='closed');
-  const cheap=live.filter(i=>i.compare&&!i.compare.skip&&i.compare.minVsEst<=-30).length;
+  const cheap=live.filter(i=>cheapOK(i)&&i.compare.minVsEst<=-30).length;
   AFTER.push(initBanner);
   return `<section class="block">
     <div class="banner" id="banner" aria-roledescription="carousel" aria-label="리얼픽 소개">
@@ -1099,7 +1099,7 @@ function viewHome(){
     // 같은 건물 호실이 여러 장 나오지 않게 건물당 1개만
     const pick=(list,n=4)=>{const seen=new Set();return [...list.filter(hasPh),...list.filter(i=>!hasPh(i))].filter(i=>{const b=aucBldg(i.title);if(seen.has(b))return false;seen.add(b);return true}).slice(0,n)};
     // 기준을 먼저 통과한 물건(시세보다 30% 이상 싸게 시작)만 후보로 두고, 그 안에서 사진 있는 것을 먼저 보여준다
-    const cheapL=open.filter(i=>i.compare&&!i.compare.skip&&i.compare.count>=5&&i.compare.minVsEst<=-30&&i.compare.minVsEst>-60).sort((a,b)=>a.compare.minVsEst-b.compare.minVsEst);
+    const cheapL=open.filter(i=>cheapOK(i)&&i.compare.count>=5&&i.compare.minVsEst<=-30&&i.compare.minVsEst>-60).sort((a,b)=>a.compare.minVsEst-b.compare.minVsEst);
     // 마감 임박: 7일 안에 입찰이 끝나는 물건만 후보
     const wk=new Date(Date.now()+7*864e5).toISOString().slice(0,10);
     const soonL=open.filter(i=>i.bidEnd&&i.bidEnd.slice(0,10)<=wk).sort((a,b)=>a.bidEnd.localeCompare(b.bidEnd));
@@ -2029,7 +2029,7 @@ function aucBase(){
     if(fails!=null&&!((it.fails||0)>=fails)) return false;
     const share=!!it.share||/지분/.test(it.title);
     if(AF.share==='ex'&&share) return false; if(AF.share==='only'&&!share) return false;
-    if(AF.cheap&&!(it.compare&&it.compare.minVsEst<0)) return false;
+    if(AF.cheap&&!(cheapOK(it)&&it.compare.minVsEst<0)) return false;
     return true;
   });
 }
@@ -2171,7 +2171,7 @@ function aucCard(it){
   const isLand=it.cat==='land'||/토지|대지|임야|전$|답$/.test(it.usage||'');
   const xk=AUCX[it.id]?.kinds;
   const ph=(xk?.[0]==='p'||(xk&&isLand)?AUCX[it.id].photos[0]:null)||(it.ph&&(it.phk==='p'||isLand)?it.ph:null);
-  const cheap=c&&!c.skip&&c.minVsEst<0&&c.minVsEst>-85?Math.abs(c.minVsEst).toFixed(0):null;
+  const cheap=cheapOK(it)&&c.minVsEst<0&&c.minVsEst>-85?Math.abs(c.minVsEst).toFixed(0):null;
   const end=(it.bidEnd||'').slice(5).replace('-','.');
   return `<a class="lcard acard" href="#auc-${esc(it.id)}">
     <div class="athumb${ph?'':' noph'}">${ph?`<img src="${esc(ph)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('noph');this.remove()">`:''}<span class="aph-ph">${aucIcon(it)}<em>사진 준비 중</em></span>
@@ -2484,6 +2484,11 @@ const M=n=>{const s=n<0?'−':'';n=Math.abs(Math.round(n/1e4));return s+(n>=1e4?
 const pctTxt=v=>(v>=0?'+':'')+(Math.round(v*10)/10).toLocaleString()+'%';
 
 /* ---- 공매 물건 분석 (규칙 기반, 비용 없음) ---- */
+// 시세 비교 신뢰도: 감정가가 시세 추정보다 40% 넘게 낮으면 비교 대상이 다른 물건일 가능성이 커요
+// (지하층·상가·일부 면적 등). 이런 물건은 "시세보다 싸다"로 보여주지 않아요.
+const cmpOdd=i=>!!(i&&i.compare&&!i.compare.skip&&i.compare.apslVsEst!=null&&i.compare.apslVsEst<=-40);
+const overApsl=i=>!!(i&&+i.apsl&&+i.minp>+i.apsl*1.05);
+const cheapOK=i=>!!(i&&i.compare&&!i.compare.skip&&!cmpOdd(i)&&!overApsl(i));
 function aucAnalyze(it){
   const x=AUCX[it.id]&&!AUCX[it.id].loading?AUCX[it.id]:null;
   const c=it.compare&&!it.compare.skip?it.compare:null;
@@ -2512,7 +2517,10 @@ function aucAnalyze(it){
   }
   // 점수
   let score=60; const pros=[],cons=[];
-  if(disc!=null){
+  const odd=cmpOdd(it), over=overApsl(it);
+  if(disc!=null&&odd){
+    cons.push(`감정가가 주변 시세 추정보다 ${Math.round(-c.apslVsEst)}% 낮아요. 비교한 거래가 다른 종류의 물건(지하층·상가·일부 면적 등)일 수 있어 시세를 직접 확인해야 해요`);
+  }else if(disc!=null){
     if(disc<=-30){score+=25;pros.push(`최저가가 주변 시세보다 ${Math.round(-disc)}% 낮아요`)}
     else if(disc<=-15){score+=15;pros.push(`최저가가 주변 시세보다 ${Math.round(-disc)}% 낮아요`)}
     else if(disc<=-5){score+=5;pros.push(`최저가가 시세보다 조금 낮아요 (${Math.round(-disc)}%)`)}
@@ -2529,6 +2537,8 @@ function aucAnalyze(it){
   if(x?.building?.useAprDay){const y=+String(x.building.useAprDay).slice(0,4);if(y&&new Date().getFullYear()-y>=30){score-=5;cons.push(`사용승인 ${y}년 — 30년 넘은 건물`)}}
   const sim=fair?calcRun({...CALC_DEF(),...calcPrefill(it,{fair,est}),exit:'sell'}):null;
   if(sim){if(sim.profit<0){score-=12;cons.push('기본 비용(세금·명도·수리·이자)을 넣으면 2년 뒤 예상 수익이 마이너스예요')}else if(sim.roi>=30)pros.push(`참고 입찰가로 사서 2년 뒤 시세에 팔면 내 돈 대비 약 ${Math.round(sim.roi)}% 수익`)}
+  if(over) score=Math.min(score,57);        // 감정가보다 비싸게 시작하면 최고 D(주의)
+  else if(odd) score=Math.min(score,64);    // 시세 비교가 불확실하면 최고 C
   score=Math.max(0,Math.min(100,score));
   const grade=disc==null?'-':score>=85?'A':score>=72?'B':score>=58?'C':score>=45?'D':'E';
   return {est,disc,fair,rights,score,grade,pros,cons,c,x,sim};
@@ -2819,7 +2829,7 @@ function viewMarket(){
     ? sidos.map(([k])=>({k,link:true,s:mkStat(rows.filter(i=>i.sido===k))})).filter(g=>g.s.n).slice(0,17)
     : Object.entries(rows.reduce((m,i)=>{const k=i.sgg||'기타';(m[k]=m[k]||[]).push(i);return m},{})).map(([k,a])=>({k,s:mkStat(a)})).sort((a,b)=>b.s.n-a.s.n).slice(0,15);
   const catG=AUC_CATS.slice(1).map(([k,c])=>({k,s:mkStat(rows.filter(i=>c.includes(i.cat)))})).filter(g=>g.s.n);
-  const picks=rows.filter(i=>i.compare&&i.compare.minVsEst!=null&&i.compare.count>=5&&i.compare.minVsEst<-10&&i.compare.minVsEst>-60&&!/지분/.test(i.title+(i.usage||''))).sort((a,b)=>a.compare.minVsEst-b.compare.minVsEst).slice(0,6);
+  const picks=rows.filter(i=>cheapOK(i)&&i.compare.minVsEst!=null&&i.compare.count>=5&&i.compare.minVsEst<-10&&i.compare.minVsEst>-60&&!/지분/.test(i.title+(i.usage||''))).sort((a,b)=>a.compare.minVsEst-b.compare.minVsEst).slice(0,6);
   const place=MK.sido==='전체'?'전국':MK.sido, kind=MK.cat==='전체'?'공매 물건':MK.cat;
   const lines=[];
   if(deepS.n&&freshS.ratio!=null&&deepS.ratio!=null) lines.push(`${place} ${kind} 중 <b>3회 이상 유찰</b>된 물건은 ${deepS.n.toLocaleString()}건으로, 최저가가 감정가의 평균 <b>${Math.round(deepS.ratio)}%</b>까지 내려와 있어요. 유찰 없는 물건은 ${Math.round(freshS.ratio)}%예요.`);
@@ -3576,7 +3586,7 @@ function houseCat(h){const k=(h.kind||'')+' '+(h.group||'');return /아파트|AP
 const hDday=h=>{if(!h.end)return h.notice&&h.notice>new Date(TODAY).toISOString().slice(0,10)?['공고 예정','upcoming']:['공고 중','open'];const d=Math.round((Date.parse(h.end+'T00:00:00+09:00')-TODAY)/864e5);if(h.start&&Date.parse(h.start+'T00:00:00+09:00')>TODAY)return ['접수 예정','upcoming'];return d<0?['접수 마감','closed']:[d===0?'오늘 마감':'D-'+d,d<=3?'soon':'open']};
 const manwon=v=>v?wonKRW(v*1e4):'';
 // 최저가가 추정 시세의 15% 미만이면(85% 넘게 싸다고 나오면) 지분·일부 면적 등 비교가 맞지 않는 경우가 대부분이라 표시하지 않는다
-const okCmp=i=>i.compare&&!i.compare.skip&&i.compare.minVsEst>-85;
+const okCmp=i=>cheapOK(i)&&i.compare.minVsEst>-85;
 function mapPoints(){
   const pts=[];
   if(MF.src==='전체'||MF.src==='auc') for(const i of AUC.items){ if(aucDday(i)[1]==='closed') continue;
