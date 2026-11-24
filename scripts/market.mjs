@@ -25,11 +25,12 @@ const FIELD = {
   status: [/^pbctStatNm$/i, /StatNm$/i],
   statusCd: [/^pbctStatCd$/i, /StatCd$/i],
   apsl: [/^apslEvlAmt$/i, /apsl/i],
-  minp: [/^lowstBidPrc$/i, /lowstBidPrc/i, /lowst/i],
-  win: [/^(scsbd|sccbd|scbd)(Amt|Prc)/i, /(scsbd|sccbd|scbd|sucs).*(amt|prc)/i, /bidAmt$/i],
-  rate: [/^(scsbd|sccbd|scbd).*(Rt|Rate)$/i, /(scsbd|sccbd|scbd).*(rt|rate)/i],
+  minp: [/^lowstBidPrc$/i, /^lowstBidPrcIndctCont$/i, /lowstBidPrc/i, /lowst/i],
+  win: [/^scfbAmt$/i, /^(scsbd|sccbd|scbd)(Amt|Prc)/i, /(scsbd|sccbd|scbd|sucs).*(amt|prc)/i, /bidAmt$/i],
+  rate: [/^apslPrcCtrsScfbPrcRto$/i, /^(scsbd|sccbd|scbd).*(Rt|Rate)$/i, /(scsbd|sccbd|scbd).*(rt|rate)/i],
   bidders: [/^(vld|valid)/i, /vld.*(cnt|nmpr|num|co)/i],
   fails: [/^usbdNft$/i, /usbd/i],
+  round: [/^pbctNsq$/i],
   sd: [/^lctnSdnm$/i], sgg: [/^lctnSggnm$/i],
   usgM: [/^cltrUsgMclsCtgrNm$/i], usgS: [/^cltrUsgSclsCtgrNm$/i],
   name: [/^onbidCltrNm$/i, /CltrNm$/i],
@@ -64,7 +65,8 @@ function parse(text) {
 export async function buildMarket(rawKey, { readJson, writeJson, nowKST, log = console.log }) {
   const key = normKey(rawKey);
   const prev = await readJson("market.json", null);
-  const months = prev?.months || {};                 // "YYYYMM" → { "시도|cat": bucket }
+  const VERSION = 2;                                 // 계산 방식이 바뀌면 올려서 12개월을 다시 받는다
+  const months = prev?.v === VERSION ? (prev.months || {}) : {};   // "YYYYMM" → { "시도|cat": bucket }
   let op = prev?.op || null, fields = null, sample = prev?.sample || null, calls = 0;
   const errors = [];
 
@@ -112,9 +114,13 @@ export async function buildMarket(rawKey, { readJson, writeJson, nowKST, log = c
       const st = String(v("status") || ""), cd = String(v("statusCd") || "");
       const won = cd === "0010" || /낙찰/.test(st), failed = cd === "0011" || /유찰/.test(st);
       if (!won && !failed) continue;
-      const sido = sidoOf(v("sd"), "") || "기타";
+      // 입찰결과 API에는 시·도 항목이 없어 물건명(주소로 시작) 첫 낱말로 시·도를 정한다
+      const nm = String(v("name") || "").trim();
+      const sido = sidoOf(v("sd"), nm) || "기타";
       const cat = categoryOf(v("usgM"), v("usgS"), v("name")) || "etc";
-      const apsl = num(v("apsl")), minp = num(v("minp")), win = num(v("win")), fails = num(v("fails")) ?? 0;
+      const apsl = num(v("apsl")), minp = num(v("minp")), win = num(v("win"));
+      const round = num(v("round"));
+      const fails = num(v("fails")) ?? (round && round > 1 ? round - 1 : 0);   // 회차 n = 앞서 n-1번 유찰
       let rate = num(v("rate"));
       if ((rate == null || rate <= 0) && win && apsl) rate = win / apsl * 100;
       const b = ((byMonth[date.slice(0, 6)] ||= {})[`${sido}|${cat}`] ||= { a: 0, f: 0, r: 0, rn: 0, m: 0, b: 0, bn: 0, fr: FB.map(() => [0, 0]), h: RB.map(() => 0) });
@@ -127,7 +133,7 @@ export async function buildMarket(rawKey, { readJson, writeJson, nowKST, log = c
         const fi = bucketIdx(FB, fails); b.fr[fi][0]++; b.fr[fi][1] += rate;
         if (win && minp) b.m += win / minp * 100;       // 최저가 대비 낙찰가 (rn과 같은 개수 기준)
       }
-      recent.push({ d: `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`, t: String(v("name") || "").slice(0, 60), sido, sgg: String(v("sgg") || ""), cat, apsl, win, rate: rate == null ? null : Math.round(rate * 10) / 10, n: bidders, fails });
+      recent.push({ d: `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`, t: nm.slice(0, 60), sido, sgg: String(v("sgg") || nm.split(/\s+/)[1] || ""), cat, apsl, win, rate: rate == null ? null : Math.round(rate * 10) / 10, n: bidders, fails });
     }
     for (const m of Object.values(byMonth)) for (const b of Object.values(m)) { b.r = Math.round(b.r * 10) / 10; b.m = Math.round(b.m * 10) / 10; b.fr = b.fr.map(([n, s]) => [n, Math.round(s * 10) / 10]); }
     return { byMonth, recent };
@@ -157,7 +163,7 @@ export async function buildMarket(rawKey, { readJson, writeJson, nowKST, log = c
 
   recentAll.sort((a, b) => b.d.localeCompare(a.d));
   const out = {
-    source: "한국자산관리공사 온비드 입찰결과 (공공데이터포털)", updatedAt: nowKST(), op, fields: fields || prev?.fields || null, sample,
+    v: VERSION, source: "한국자산관리공사 온비드 입찰결과 (공공데이터포털)", updatedAt: nowKST(), op, fields: fields || prev?.fields || null, sample,
     fb: FB, rb: RB, cats: CATS, months,
     recent: recentAll.length ? recentAll.filter(r => r.rate != null).slice(0, 400) : (prev?.recent || []),
     calls, errors
