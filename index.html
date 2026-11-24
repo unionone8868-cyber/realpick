@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("rp_theme")||"light"}catch(e){document.documentElement.dataset.theme="light"}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="매물 검색, 실거래가·AI 추정 시세 비교, 커뮤니티와 전문가 인사이트를 한곳에서 제공하는 부동산 플랫폼 리얼픽">
 <title>리얼픽 부동산</title>
@@ -193,6 +194,9 @@ select{font:inherit;font-size:14px;color:var(--fg);background:var(--surface);bor
 .ncard .reg{font-size:12px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
 .ncard .realm{font-size:12px;font-weight:700;color:var(--accent)}
 .ncard .icons{margin-left:auto;display:flex;gap:2px}
+.top .theme-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--fg);margin-right:8px;flex:none}
+.theme-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.theme-btn .i-sun{display:none}:root[data-theme="dark"] .theme-btn .i-sun{display:block}:root[data-theme="dark"] .theme-btn .i-moon{display:none}
 .icon{border:0;background:transparent;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--faint)}
 .icon:hover{background:var(--sunk);color:var(--fg)}
 .icon svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
@@ -488,6 +492,29 @@ a.acard:hover .athumb img{transform:scale(1.04)}
 html.embed header.top,html.embed .tabbar,html.embed footer,html.embed #fab,html.embed .joinbar,html.embed .ana-how,html.embed .ana-ext,html.embed .ana .subnav{display:none!important}
 html.embed body{padding-bottom:0!important}html.embed .ana{padding-top:8px}html.embed .ana-out{margin-top:0}
 .ana-fold{margin-top:14px}.ana-fold>summary{cursor:pointer;font-weight:800;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);list-style:none}.ana-fold>summary::before{content:"✎ ";color:var(--accent)}.ana-fold[open]>summary{margin-bottom:10px}
+.ana-paste{padding:16px 18px;margin-bottom:14px;border:2px dashed var(--accent);background:var(--accent-soft)}.ana-paste b{font-size:15px}
+.ana-paste textarea{display:block;width:100%;box-sizing:border-box;margin:8px 0 4px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;background:var(--surface);color:var(--fg);resize:vertical}.ana-paste .note{margin:0}
+.ads-promo{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:14px 18px;margin-bottom:12px;background:var(--accent-soft);border-color:transparent}.ads-promo span{font-size:13.5px;color:var(--accent);font-weight:700}
+.ads .mk-h{margin-top:28px}
+.legal-ol{padding-left:20px;display:grid;gap:6px;margin:6px 0 14px}.legal-ol a{color:var(--accent);font-weight:700}
+.ads-hero{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;align-items:center;background:linear-gradient(135deg,var(--accent-soft),var(--surface));border:1px solid var(--line);border-radius:var(--r);padding:26px 28px;margin-bottom:22px}
+.ads-hero h2{font-size:26px;font-weight:900;line-height:1.3;margin:0 0 10px;letter-spacing:-.02em}.ads-hero p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.6}
+.ads-cta{display:flex;gap:8px;margin-top:16px}.ads-facts{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ads-facts li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:baseline}.ads-facts b{font-size:18px;color:var(--accent);font-weight:900}.ads-facts span{font-size:13px;color:var(--muted)}
+.ads-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.ads-card{padding:18px;display:flex;flex-direction:column}.ads-card h3{margin:14px 0 2px;font-size:18px;font-weight:900}
+.ads-where{margin:0 0 8px;font-size:12.5px;color:var(--accent);font-weight:700}.ads-card>p{margin:0 0 8px;font-size:14px;line-height:1.55}.ads-card ul{margin:0 0 12px;padding-left:18px;font-size:13px;color:var(--muted);display:grid;gap:3px}
+.ads-price{margin-top:auto;border-top:1px dashed var(--line);padding-top:12px;font-weight:900;font-size:16px}
+.admock{background:var(--sunk);border-radius:10px;padding:10px;height:120px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.am-bar{height:10px;border-radius:4px;background:var(--line);width:60%}.am-row{display:flex;align-items:center;gap:6px;background:var(--surface);border-radius:6px;padding:7px 8px}.am-row b{flex:1;height:7px;border-radius:4px;background:var(--line)}
+.am-row.hl{outline:2px solid var(--accent)}.admock i{font-style:normal;font-size:10px;font-weight:800;color:#fff;background:var(--accent);border-radius:4px;padding:1px 5px;white-space:nowrap}
+.am-banner{background:linear-gradient(90deg,var(--accent),#7c6cff);color:#fff;border-radius:8px;padding:9px 10px;display:grid;gap:2px}.am-banner i{background:rgb(255 255 255/.25);justify-self:start}.am-banner b{font-size:12.5px}.am-banner span{font-size:10.5px;opacity:.85}
+.am-split{flex-direction:row}.am-split>div:first-child{flex:1.6;display:grid;gap:6px;align-content:start}.am-photo{height:60px;border-radius:6px;background:var(--line)}
+.am-side{flex:1;background:var(--surface);border-radius:8px;padding:8px;display:grid;gap:5px;align-content:start;outline:2px solid var(--accent)}.am-side i{justify-self:start}.am-side b{font-size:11px}.am-side span{height:6px;border-radius:3px;background:var(--line)}
+.ads-steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;counter-reset:st}
+.ads-steps li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:4px;counter-increment:st}.ads-steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center}
+.ads-steps b{font-size:14.5px}.ads-steps span{font-size:13px;color:var(--muted)}
+.ads-notice{padding:16px 20px}.ads-notice ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px}.ads-notice a{color:var(--accent);font-weight:700}
+@media (max-width:760px){.ads-hero{grid-template-columns:1fr;padding:20px}.ads-hero h2{font-size:21px}.ads-grid,.ads-steps{grid-template-columns:1fr}}
 .ana-how{background:var(--accent-soft);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;font-size:14px}.ana-how ol{margin:6px 0 4px;padding-left:20px;display:grid;gap:3px}.ana-how a{color:var(--accent);font-weight:700}
 .ana-form{padding:20px}.ana-form h3{font-size:15px;font-weight:800;margin:18px 0 10px}.ana-form h3:first-child{margin-top:0}
 .ana-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:10px}.ana-addr{margin-bottom:10px}.ana-addr input{width:100%}
@@ -818,6 +845,7 @@ footer{background:var(--sunk);border-top:0}
       <a href="#community" data-nav="community">커뮤니티</a>
       <a href="#insight" data-nav="insight">전문가 인사이트</a>
     </nav>
+    <button class="icon theme-btn" id="themeBtn" type="button" aria-label="어두운 화면으로 보기" title="밝은/어두운 화면 전환"><svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     <div class="top-actions">
       <a class="btn" href="#login">로그인</a>
       <a class="btn primary" href="#signup">회원가입</a>
@@ -2493,6 +2521,7 @@ function aucAnalyze(it){
     else pros.push(`주변 거래 ${c.count}건으로 시세를 추정했어요`);
   }else cons.push('주변 실거래 비교가 어려운 물건이에요 (시세 직접 확인 필요)');
   if(+it.fails>=3){score+=5;pros.push(`${it.fails}회 유찰로 가격이 많이 내려왔어요`)}
+  if(it.apsl&&it.minp>it.apsl*1.05) cons.push(`최저가가 감정가보다 ${Math.round((it.minp/it.apsl-1)*100)}% 높아요${/신탁/.test(it.org||'')?' (신탁공매는 채무·분양가 기준으로 최저가를 정하기도 해요)':''}`);
   if(rights.level==='high'){score-=30;cons.push('권리 관계에 위험 신호가 있어요')}
   else if(rights.level==='mid'){score-=10;cons.push('권리·명도 확인이 필요해요')}
   else if(rights.level==='low') pros.push(it._rights?'입력하신 명세서 내용상 권리 문제가 적어요':'공고상 권리 문제가 적어 보여요');
@@ -2633,6 +2662,50 @@ function anaFromQuery(){
   ANA.f=f;ANA.res=null;ANA.item=null;ANA.pendingAddr=f.addr;ANA.autoRun=true;
   history.replaceState(null,'','#analyze');return true;
 }
+// 법원경매 물건 상세 화면을 통째로 복사해 붙여 넣은 글에서 값 읽기 (크롬 확장과 같은 규칙)
+function anaParseCourt(full){
+  full=String(full||'').replace(/ /g,' ');
+  const won=s=>{const n=Number(String(s||'').replace(/[^\d]/g,''));return n>0?n:null};
+  let t=full;const at=t.indexOf('물건기본정보');if(at>=0)t=t.slice(at,at+6000);
+  const lines=t.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+  const find=(labels,ok,span=3)=>{for(const label of labels)for(let i=0;i<lines.length;i++){const k=lines[i].indexOf(label);if(k<0)continue;const c=[lines[i].slice(k+label.length).replace(/^[\s:：]+/,'')];for(let j=1;j<=span&&lines[i+j];j++)c.push(lines[i+j]);for(const x of c){const v=ok(x);if(v)return v}}return ''};
+  const money=c=>{const m=String(c).match(/(\d{1,3}(?:,\d{3})+|\d{7,})\s*원/);const n=m?won(m[1]):null;return n&&n>=1e6?n:null};
+  const o={};
+  const cm=t.match(/(\d{4})\s*타경\s*(\d+)/)||full.match(/(\d{4})\s*타경\s*(\d+)/);o.caseNo=cm?cm[1]+'타경'+cm[2]:'';
+  o.court=(t.match(/([가-힣]+지방법원(?:\s*[가-힣]+지원)?)/)||[])[1]||'';
+  o.apsl=find(['감정평가액','감정가'],money)||null;o.minp=find(['최저매각가격','최저입찰가','최저가'],money,4)||null;
+  const addrOk=c=>{const a=String(c).split(/\t/).find(x=>/(시|도|군|구)\s/.test(x))||'';return a.trim()?a:null};
+  const clean=a=>a.replace(/\[.*?\]/g,'').replace(/^\s*\([^)]*\)\s*/,'').replace(/\s*(등기기록|전자지도|씨리얼).*$/,'').trim();
+  const addrs=[];lines.forEach((l,i)=>{if(/소\s*재\s*지/.test(l)){const a=addrOk(l.replace(/.*소\s*재\s*지/,''))||addrOk(lines[i+1]||'');if(a)addrs.push(a)}});
+  const bld=addrs.find(a=>/^\s*\((?!전|답|대지|임야|대\))/.test(a))||addrs[0]||'';o.addr=clean(bld);
+  const kind=find(['물건종류','물건종별','물건용도','용도'],c=>{const v=String(c).split(/\t/)[0].trim();return v&&v.length<=20&&!/검색|선택/.test(v)?v:null});
+  const CT=[['apt',/아파트/],['offi',/오피스텔/],['rh',/다세대|연립|빌라/],['sh',/단독|다가구/],['land',/^(대지|전|답|임야|잡종지|과수원|목장용지|공장용지|창고용지|도로|토지)$|토지|임야|전답/],['indu',/공장|창고/],['nrg',/근린|상가|점포|사무실|업무|숙박|교육|의료/]];
+  o.cat=(CT.find(([,re])=>re.test(kind))||CT.find(([,re])=>re.test(bld))||[null])[0];
+  const li=full.indexOf('목록내역'),list=li>=0?full.slice(li,li+8000):'';const n2=x=>Number(String(x).replace(/,/g,''));
+  let b=0,e=0,l=0;o.jimok='';
+  if(list){const main=list.split(/제시외/)[0];
+    const ex=main.match(/전유부분[\s\S]{0,200}?([\d,]+\.?\d*)\s*㎡/);if(ex)e=n2(ex[1]);
+    for(const m of main.matchAll(/(?:^|\n|\s)(?:지하\s*)?\d+층\s+([\d,]+\.?\d*)\s*㎡/g))b+=n2(m[1]);
+    const lm=main.match(/(?:^|\n|\t)\s*(전|답|대|임야|잡종지|과수원|목장용지|공장용지|창고용지|도로|대지)\s+([\d,]+\.?\d*)\s*㎡/);if(lm){o.jimok=lm[1]==='대지'?'대':lm[1];l=n2(lm[2])}}
+  const r2=v=>v?String(Math.round(v*100)/100):'';
+  o.area=o.cat==='land'?r2(l):['apt','offi','rh'].includes(o.cat)?r2(e||b):r2(b||e);
+  const fl=(full.match(/유찰/g)||[]).length;o.fails=String(Math.min(fl,8));
+  const dm=find(['매각기일','입찰기일'],c=>{const m=String(c).match(/(\d{4})[.\-]\s?(\d{1,2})[.\-]\s?(\d{1,2})/);return m?m.slice(1,4).map(x=>x.padStart(2,'0')).join('-'):null});o.bidDay=dm||'';
+  o.name=(o.addr.match(/([가-힣A-Za-z0-9]+(?:아파트|빌라|맨션|타운|오피스텔|자이|힐스테이트|래미안|푸르지오|더샵|e편한세상|아이파크|롯데캐슬|센트럴|파크))/)||[])[1]||'';
+  return o;
+}
+function anaApplyPaste(text){
+  const o=anaParseCourt(text);
+  if(!o.caseNo&&!o.apsl){toast('법원경매 물건 상세 화면 내용이 아닌 것 같아요');return}
+  const f={...ANA_DEF(),rights:{}};
+  f.caseNo=o.caseNo;f.court=o.court;f.bidDay=o.bidDay;if(o.cat)f.cat=o.cat;f.name=o.name;f.area=o.area;f.jimok=ANA_JIMOK.includes(o.jimok)?o.jimok:'';f.fails=o.fails;
+  f.apsl=o.apsl?String(Math.round(o.apsl/1e4)):'';f.minp=o.minp?String(Math.round(o.minp/1e4)):'';
+  const a=anaParseAddr(o.addr);f.sgg=a.sgg||'';f.emd=a.emd||'';
+  ANA.f=f;ANA.res=null;ANA.item=null;anaSave();
+  const miss=[!f.sgg&&'시·군·구',!f.area&&'면적',!f.apsl&&'감정가',!f.minp&&'최저가'].filter(Boolean);
+  if(miss.length){render();toast(miss.join(', ')+'은(는) 직접 넣어 주세요')}else anaRun();
+}
+document.addEventListener('paste',e=>{if(e.target.id!=='anaPaste')return;e.preventDefault();const t=e.clipboardData?.getData('text')||'';e.target.value='';anaApplyPaste(t)});
 function viewAnalyze(){
   anaFromQuery();
   if(!ANA.sggs){anaLoadSgg();return `<section class="block">${secHead('법원경매 물건, 사건번호로 분석','경매 물건 분석기')}<div class="empty">불러오는 중이에요…</div></section>`}
@@ -2644,9 +2717,10 @@ function viewAnalyze(){
   const it=ANA.item;
   return `<section class="block ana">${secHead('법원경매 물건 · 실거래로 바로 분석','경매 물건 분석기')}
   <nav class="subnav" aria-label="경매 분석 메뉴"><a href="#analyze" aria-current="page">🔎 경매 물건 분석기</a><a href="#calc">🧮 수익률 계산기</a><a href="#market">📊 공매 시장 리포트</a></nav>
-  <div class="ana-how"><b>이렇게 써요</b><ol><li><a href="https://www.courtauction.go.kr" target="_blank" rel="noopener">대법원 법원경매정보</a>에서 마음에 드는 물건을 찾아요</li><li>사건번호·주소·면적·감정가·최저가를 아래에 옮겨 적어요</li><li>매각물건명세서를 보고 권리 항목을 체크하면 끝이에요</li></ol><p class="note">리얼픽은 법원 사이트에 접속하거나 그 정보를 저장하지 않아요. 입력하신 값과 국토부 실거래가 공개 자료로만 계산해요.</p></div>
+  <div class="ana-how"><b>이렇게 써요</b><ol><li><a href="https://www.courtauction.go.kr" target="_blank" rel="noopener">대법원 법원경매정보</a>에서 물건 상세 화면을 열어요</li><li>화면을 <b>전체 선택(Ctrl+A) → 복사(Ctrl+C)</b> 해요. 휴대폰은 길게 눌러 전체 선택 → 복사</li><li>아래 칸에 <b>붙여 넣으면(Ctrl+V)</b> 사건번호·주소·면적·감정가·최저가가 채워지고 바로 분석해요</li></ol><p class="note">리얼픽은 법원 사이트에 접속하거나 그 정보를 저장하지 않아요. 입력하신 값과 국토부 실거래가 공개 자료로만 계산해요.</p></div>
   ${ANA.embed&&it?'<div id="anaOut">'+anaOutHtml(it)+'</div>':''}
   ${ANA.embed?`<details class="ana-fold" ${it?'':'open'}><summary>${it?'입력값 고치기 · 권리 체크':'입력값 확인'}</summary>`:''}
+  ${ANA.embed?'':`<div class="panel ana-paste"><b>📋 법원 화면 붙여넣기</b><textarea id="anaPaste" rows="2" placeholder="법원경매 물건 상세 화면을 전체 복사해서 여기에 붙여 넣으세요 (Ctrl+V)"></textarea><p class="note">붙여 넣은 글은 이 기기에서만 읽고 저장하거나 보내지 않아요. 아래 칸은 직접 고칠 수 있어요.</p></div>`}
   <form id="anaForm" class="panel ana-form" autocomplete="off" onsubmit="return false">
     <h3>1. 사건 정보</h3>
     <div class="ana-g3">${inp('caseNo','사건번호','예: 2025타경12345')}${inp('court','법원 (선택)','예: 대구지방법원')}${inp('bidDay','매각기일 (선택)','예: 2026-12-10')}</div>
@@ -3042,6 +3116,39 @@ function viewMy(){
 /* ---------- 약관·개인정보처리방침 ---------- */
 const DRAFT_NOTE='';
 function legalPage(title,body){return `<article class="formcard wide legal"><h1>${title}</h1>${DRAFT_NOTE}${body}<p class="note">시행일: ${LEGAL_DATE} · 운영자: ${esc(OPERATOR())}</p></article>`}
+
+/* ================= 중개사 광고 안내 ================= */
+const AD_PRODUCTS=[
+  {key:'top',name:'매물 상단 노출',price:'매물 1건당 월 30,000원',where:'매물 검색·지역 목록 맨 위',desc:'내 매물을 매물 검색과 지역 목록 상단에 "추천" 표시와 함께 먼저 보여 드려요.',points:['검색 조건이 맞는 이용자에게 먼저 노출','"광고 · 추천" 표시로 일반 매물과 구분','노출 기간 동안 매물 수정 가능']},
+  {key:'banner',name:'지역 배너 광고',price:'지역(시·군·구) 1곳당 월 200,000원',where:'메인 화면 · 지역 검색 결과 배너',desc:'고른 지역을 보는 이용자에게 중개사무소 배너를 보여 드려요.',points:['메인 화면과 해당 지역 검색 결과에 게재','사무소 이름·대표 문구·연락처 표시','지역 1곳당 게재 수 제한']},
+  {key:'office',name:'추천 중개사무소',price:'월 100,000원',where:'경매·공매 물건 상세 화면 오른쪽',desc:'경매·공매 물건을 보는 이용자에게 근처 중개사무소로 소개해 드려요.',points:['물건 위치와 가까운 사무소 우선 표시','상호·대표자·연락처·주요 지역 표시','명도·임대 상담 수요가 있는 이용자에게 노출']}
+];
+function adMock(k){
+  if(k==='top') return `<div class="admock"><div class="am-bar"></div><div class="am-row hl"><i>광고 · 추천</i><b></b></div><div class="am-row"><b></b></div><div class="am-row"><b></b></div></div>`;
+  if(k==='banner') return `<div class="admock"><div class="am-bar"></div><div class="am-banner"><i>광고</i><b>○○공인중개사사무소</b><span>수성구 아파트 전문 · 053-000-0000</span></div><div class="am-row"><b></b></div></div>`;
+  return `<div class="admock am-split"><div><div class="am-photo"></div><div class="am-row"><b></b></div></div><div class="am-side"><i>광고</i><b>추천 중개사무소</b><span></span><span></span></div></div>`;
+}
+function viewAds(){
+  const mail=`mailto:${COMPANY.email}?subject=${encodeURIComponent('[리얼픽] 중개사 광고 신청·문의')}&body=${encodeURIComponent('중개사무소 이름:\n대표자:\n연락처:\n관심 상품(매물 상단 노출 / 지역 배너 / 추천 중개사무소):\n희망 지역:\n')}`;
+  return `<section class="block ads">${secHead('중개사 회원 전용','중개사 광고 안내')}
+  <div class="ads-hero"><div><h2>리얼픽에서 내 매물과 사무소를<br>먼저 보여 주세요</h2><p>리얼픽은 공매·매물·실거래를 한곳에서 비교하는 부동산 플랫폼이에요. 매물을 찾는 이용자와 경매·공매 물건을 보는 투자자에게 중개사무소를 알릴 수 있어요.</p>
+    <div class="ads-cta"><a class="btn primary" href="${mail}">광고 신청·문의</a><a class="btn" href="#signup">중개사 회원 가입</a></div></div>
+    <ul class="ads-facts"><li><b>3가지</b><span>광고 상품</span></li><li><b>"광고"</b><span>표시로 일반 정보와 구분</span></li><li><b>월 단위</b><span>신청·해지</span></li></ul></div>
+  <h2 class="mk-h">광고 상품</h2>
+  <div class="ads-grid">${AD_PRODUCTS.map(a=>`<article class="panel ads-card">${adMock(a.key)}<h3>${a.name}</h3><p class="ads-where">노출 위치 · ${a.where}</p><p>${a.desc}</p><ul>${a.points.map(x=>`<li>${x}</li>`).join('')}</ul><div class="ads-price">${a.price}</div></article>`).join('')}</div>
+  <p class="note">※ 위 가격은 정식 오픈(2027년 1월 예정) 기준 예정 금액이며, 운영 결과에 따라 바뀔 수 있어요. 오픈 초기에 처음 가입한 중개사 회원에게 일정 기간 무료 노출을 제공하는 것을 검토하고 있어요.</p>
+  <h2 class="mk-h">신청 방법</h2>
+  <ol class="ads-steps"><li><b>중개사 회원 가입</b><span>회원가입에서 "중개사 회원"을 고르세요.</span></li><li><b>중개사무소 등록</b><span>중개사무소 등록번호와 정보를 등록하면 운영자가 확인해요.</span></li><li><b>상품 신청</b><span>원하는 상품과 지역·매물을 골라 신청하세요.</span></li><li><b>결제 후 게재</b><span>결제가 끝나면 신청한 위치에 광고가 게재돼요.</span></li></ol>
+  <h2 class="mk-h">유의사항</h2>
+  <div class="panel ads-notice"><ul>
+    <li>광고는 「공인중개사법」에 따라 등록된 개업공인중개사만 신청할 수 있어요.</li>
+    <li>광고 영역에는 항상 <b>"광고"</b> 표시가 붙어 일반 정보와 구분돼요.</li>
+    <li>매물 광고에는 중개사무소 정보와 소재지·면적·가격 등 법령이 정한 표시 항목을 사실대로 적어야 해요. 허위·과장 매물로 확인되면 광고가 중단될 수 있어요.</li>
+    <li>게재 시작 전 취소하면 전액, 게재 중 해지하면 남은 기간만큼 돌려드려요. 자세한 내용은 <a href="#terms">이용약관 제8조(광고 서비스)</a>를 확인해 주세요.</li>
+  </ul></div>
+  <p class="note" style="margin-top:14px">광고 문의: ${esc(COMPANY.email)} · ${esc(COMPANY.name)}</p>
+  </section>`;
+}
 function viewTerms(){return legalPage('이용약관',`
   <h2>제1조 목적</h2><p>이 약관은 ${esc(OPERATOR())}(이하 "운영자")가 제공하는 리얼픽 서비스(공매 물건 정보와 주변 시세 비교, 분양·임대 공고, 실거래 동향, 매물 정보, 정부지원사업 공고, 금리 정보, AI 상담, 커뮤니티 등)의 이용 조건과 절차, 회원과 운영자의 권리·의무를 정합니다.</p>
   <h2>제2조 회원가입</h2><p>회원가입은 만 14세 이상인 사람이 이 약관과 개인정보 수집·이용에 동의하고 이메일 인증을 마치면 이루어집니다. 다른 사람의 정보를 쓰거나 사실과 다른 정보를 입력하면 이용을 제한할 수 있습니다.</p>
@@ -3939,6 +4046,14 @@ document.addEventListener('click',e=>{ if(e.target.closest('#drawer a[href^="#"]
 
 {const fw=document.querySelector('footer .wrap'); if(fw) fw.innerHTML=footerInfo();}
 render(); loadFeed(); loadAuctions(); initAuth(); loadMarket();
+
+// 밝은/어두운 화면 전환 (기본: 밝은 화면, 선택은 이 기기에 기억)
+document.getElementById('themeBtn')?.addEventListener('click',()=>{
+  const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=next;
+  try{localStorage.setItem('rp_theme',next)}catch(e){}
+  const b=document.getElementById('themeBtn');if(b)b.setAttribute('aria-label',next==='dark'?'밝은 화면으로 보기':'어두운 화면으로 보기');
+});
 </script>
 
 </body>
