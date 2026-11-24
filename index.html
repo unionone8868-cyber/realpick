@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>try{var q=location.search;if(/[?&]app=0/.test(q))sessionStorage.removeItem("rp_app");if(/[?&]app=1/.test(q))sessionStorage.setItem("rp_app","1");if(matchMedia("(display-mode: standalone)").matches||navigator.standalone===true||window.Capacitor||sessionStorage.getItem("rp_app"))document.documentElement.classList.add("app-ui")}catch(e){}</script>
 <!-- 정식 오픈 전까지 검색엔진 노출 막기 (오픈할 때 아래 한 줄 삭제) -->
 <meta name="robots" content="noindex, nofollow">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("rp_theme")||"light"}catch(e){document.documentElement.dataset.theme="light"}</script>
@@ -201,6 +202,58 @@ select{font:inherit;font-size:14px;color:var(--fg);background:var(--surface);bor
 .ncard .reg{font-size:12px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
 .ncard .realm{font-size:12px;font-weight:700;color:var(--accent)}
 .ncard .icons{margin-left:auto;display:flex;gap:2px}
+
+/* ===== 앱 전용 화면 (html.app-ui) ===== */
+.apptop,.apptab{display:none}
+html.app-ui{--app-bg:#f3f5fa}
+html.app-ui[data-theme="dark"]{--app-bg:#0b0f1a}
+html.app-ui body{background:var(--app-bg);padding-top:calc(56px + env(safe-area-inset-top,0px));padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+html.app-ui header.top,html.app-ui footer,html.app-ui .tabbar,html.app-ui #fab,html.app-ui .install-bar,html.app-ui .bmkdock{display:none!important}
+html.app-ui .apptop{display:flex;align-items:center;gap:6px;position:fixed;top:0;left:0;right:0;z-index:50;height:56px;padding:env(safe-area-inset-top,0px) 10px 0;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);box-sizing:content-box}
+.apptop .at-logo{display:flex;align-items:center;padding-left:4px;color:var(--fg)}.apptop .at-logo svg{height:24px;width:auto}
+.apptop .at-sp{flex:1}.apptop .at-title{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.apptop .at-ic{width:40px;height:40px;border:0;background:none;border-radius:50%;display:grid;place-items:center;color:var(--fg)}
+.apptop .at-ic svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.apptop .at-ic:active{background:var(--sunk)}
+html.app-ui .apptab{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(8px + env(safe-area-inset-bottom,0px))}
+.apptab a{display:grid;justify-items:center;align-content:end;gap:3px;font-size:11px;font-weight:700;color:var(--faint);padding-top:2px}
+.apptab svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.apptab a[aria-current="page"]{color:var(--accent)}
+.apptab .at-ai span{width:48px;height:48px;margin-top:-22px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#7c5cff);box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 40%,transparent);color:#fff;border:4px solid var(--surface)}
+.apptab .at-ai span svg{width:22px;height:22px;stroke:#fff;fill:#fff}
+html.app-ui #app.wrap{padding:0 14px;max-width:none}
+html.app-ui .view.enter{animation:appIn .24s ease-out}
+@keyframes appIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+html.app-ui .block{margin-top:14px}
+html.app-ui .sec-head .eyebrow{display:none}
+html.app-ui .drawer{top:calc(56px + env(safe-area-inset-top,0px))!important;bottom:calc(70px + env(safe-area-inset-bottom,0px))!important;left:0!important;right:0!important;width:auto!important;height:auto!important;border-radius:0!important;border:0!important;box-shadow:none!important;z-index:45}
+html.app-ui .view a.back{display:none}
+/* 앱 홈 */
+.ahome{display:grid;gap:14px;padding:14px 0 8px}
+.ah-hello p{margin:0;color:var(--muted);font-size:14px;font-weight:600}.ah-hello h1{margin:2px 0 0;font-size:24px;font-weight:900;letter-spacing:-.03em}.ah-hello b{color:var(--accent)}
+.ah-search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:6px 6px 6px 14px;box-shadow:0 4px 14px rgb(15 27 61/.06)}
+.ah-search span svg{width:20px;height:20px;fill:none;stroke:var(--accent);stroke-width:1.8}.ah-search input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;color:var(--fg);outline:0}
+.ah-search button{border:0;border-radius:12px;background:var(--accent);color:#fff;font-weight:800;padding:10px 14px;font-size:14px}
+.ah-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 6px;background:var(--surface);border-radius:18px;padding:16px 8px;border:1px solid var(--line)}
+.aq{display:grid;justify-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--fg)}
+.aq-ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--qc) 12%,var(--surface));color:var(--qc)}
+.aq-ic svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ah-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ah-stats>div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 10px;display:grid;gap:1px}
+.ah-stats span{font-size:11.5px;color:var(--muted);font-weight:700}.ah-stats b{font-size:18px;font-weight:900;letter-spacing:-.02em}.ah-stats small{font-size:10.5px;color:var(--faint)}
+.ah-head{display:flex;align-items:baseline;justify-content:space-between;margin-top:6px}.ah-head h2{margin:0;font-size:18px;font-weight:900;letter-spacing:-.02em}.ah-head a{font-size:13px;color:var(--muted);font-weight:700}
+.ah-scroll{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -14px;padding:2px 14px 6px;scrollbar-width:none}.ah-scroll::-webkit-scrollbar{display:none}
+.ah-scroll>*{flex:0 0 72%;scroll-snap-align:start;margin:0!important}
+.ah-list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.ah-list a{display:flex;align-items:center;gap:10px;padding:12px 12px;border-top:1px solid var(--line)}.ah-list a:first-child{border-top:0}
+.ah-dd{flex:none;min-width:46px;text-align:center;font-size:12px;font-weight:900;color:var(--hot);background:color-mix(in srgb,var(--hot) 10%,var(--surface));border-radius:8px;padding:5px 4px}.ah-dd.pol{color:var(--accent);background:var(--accent-soft)}
+.ah-tt{flex:1;min-width:0;display:grid;gap:2px}.ah-tt b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ah-tt small{font-size:12px;color:var(--muted)}
+.ah-list a>svg{width:18px;height:18px;fill:none;stroke:var(--faint);stroke-width:2;flex:none}
+/* 마이 메뉴 */
+.amenu{margin:18px 0 10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}.amenu h2{font-size:13px;color:var(--muted);margin:0;padding:12px 16px 6px}
+.am-row{display:flex;align-items:center;gap:12px;width:100%;border:0;border-top:1px solid var(--line);background:none;padding:14px 16px;font:inherit;font-size:15px;color:var(--fg);text-align:left}
+.am-row span svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--muted)}.am-row small{margin-left:auto;color:var(--faint);font-size:12px}
+.am-co{border-top:1px solid var(--line);padding:14px 16px;font-size:12.5px;color:var(--muted);line-height:1.7}.am-co span{color:var(--faint);font-size:11.5px}
+.am-ver{margin:0;padding:0 16px 14px;font-size:11.5px;color:var(--faint)}
 .install-bar{position:fixed;left:10px;right:10px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;box-shadow:0 10px 30px rgb(15 27 61/.2)}
 .install-bar img{width:40px;height:40px;border-radius:10px;flex:none}.install-bar>div{flex:1;display:grid;gap:1px;min-width:0}.install-bar>div>b{font-size:14px}.install-bar span{font-size:12px;color:var(--muted)}
 .install-x{border:0;background:none;color:var(--faint);font-size:20px;padding:0 4px;line-height:1}
@@ -864,7 +917,15 @@ footer{background:var(--sunk);border-top:0}
   </div>
 </header>
 
+<header class="apptop" id="apptop"></header>
 <main class="wrap" id="app"></main>
+<nav class="apptab" aria-label="앱 메뉴">
+  <a href="#home" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>홈</a>
+  <a href="#listings" data-tab="listings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>지도</a>
+  <a href="#" data-tab="ai" data-open-chat class="at-ai"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg></span>AI 상담</a>
+  <a href="#auctions" data-tab="auctions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 4 6 6M11 7l6 6M12.5 5.5l-6 6 3 3 6-6"/><path d="m9.5 14.5-6 6M14 20h7"/></svg>공매</a>
+  <a href="#my" data-tab="my"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>마이</a>
+</nav>
 <nav class="tabbar" aria-label="하단 메뉴">
   <a href="#home" data-nav="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>홈</a>
   <a href="#listings" data-nav="listings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>지도</a>
@@ -973,6 +1034,11 @@ async function loadFeed(){
 
 /* ---------- 공통 조각 ---------- */
 const ICON = {
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  chev:'<path d="M9 5l7 7-7 7"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
   home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',
   book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M8 7h7M8 11h5"/>',
   map:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>',
@@ -1454,7 +1520,7 @@ function filteredMarket(){
   return MARKET.items.filter(l=>(LF.kind==='전체'||l.kind===LF.kind)&&(LF.deal==='전체'||l.deal_type===LF.deal)&&(LF.sido==='전체'||l.sido===LF.sido)&&(!sidos||sidos.includes(l.sido))&&(!LF.loss||lossInfo(l))&&(!words.length||textHit(l.title+' '+l.address+' '+l.sigungu+' '+(l.agent?.office_name||''),words)));
 }
 let MKT={loaded:false,data:null};
-async function loadMkt(){if(MKT.loading||MKT.loaded)return;MKT.loading=true;try{const r=await fetch('market.json',{cache:'no-cache'});if(r.ok)MKT.data=await r.json()}catch(e){}MKT.loaded=true;if(location.hash==='#market')render()}
+async function loadMkt(){if(MKT.loading||MKT.loaded)return;MKT.loading=true;try{const r=await fetch('market.json',{cache:'no-cache'});if(r.ok)MKT.data=await r.json()}catch(e){}MKT.loaded=true;if(location.hash==='#market'||(document.documentElement.classList.contains('app-ui')&&route()==='home'))render()}
 function mktSel(){
   const d=MKT.data;if(!d||!d.months)return null;
   const cats=AUC_CATS.find(c=>c[0]===MK.cat)?.[1];
@@ -3838,6 +3904,58 @@ document.addEventListener('click',e=>{
 },true);
 
 /* ---------- 라우터 ---------- */
+/* ================= 앱 전용 화면 (홈 화면에 설치해서 열었을 때) ================= */
+const APP_UI=document.documentElement.classList.contains('app-ui');
+const APP_TITLES=[['auctions','공매'],['listings','지도'],['market','시장 리포트'],['calc','수익률 계산기'],['analyze','경매 분석기'],['community','커뮤니티'],['insight','인사이트'],['support','정부지원금'],['rates','금리'],['my','마이'],['login','로그인'],['signup','회원가입'],['join','가입 마무리'],['terms','이용약관'],['privacy','개인정보처리방침'],['agent','중개사 센터'],['admin','관리자'],['listing-new','매물 등록'],['write','글쓰기'],['auc-','공매 상세'],['l-','매물 상세'],['h-','분양·임대'],['post-','게시글'],['ins-','인사이트'],['notice-','지원사업 공고'],['edit-','매물 수정']];
+function appTitle(r){const t=APP_TITLES.find(([k])=>k.endsWith('-')?r.startsWith(k):r===k||r.startsWith(k+'?'));return t?t[1]:''}
+function paintAppTop(r){
+  const el=document.getElementById('apptop');if(!el)return;
+  const home=!r||r==='home';
+  el.innerHTML=home
+    ?`<a class="at-logo" href="#home" aria-label="리얼픽 홈">${document.querySelector('.top .logo')?.innerHTML||'리얼픽'}</a><span class="at-sp"></span>
+      <a class="at-ic" href="#auctions" aria-label="공매 검색">${svg('search')}</a><a class="at-ic" href="#my" aria-label="마이">${svg('heart')}</a>`
+    :`<button type="button" class="at-ic at-back" id="appBack" aria-label="뒤로">${svg('back')}</button><b class="at-title">${esc(appTitle(r))}</b><span class="at-sp"></span>
+      <a class="at-ic" href="#home" aria-label="홈">${svg('home')}</a>`;
+  document.getElementById('appBack')?.addEventListener('click',()=>{history.length>1?history.back():(location.hash='#home')});
+  document.querySelectorAll('.apptab [data-tab]').forEach(a=>{const t=a.dataset.tab;const on=t==='home'?home:t==='auctions'?/^(auctions|auc-|market|calc|analyze)/.test(r):t==='listings'?/^(listings|l-|h-)/.test(r):t==='my'?/^(my|login|signup|join|agent|admin)/.test(r):false;on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
+}
+function viewAppHome(){
+  const live=AUC.items.filter(i=>aucDday(i)[1]!=='closed');
+  const bkey=i=>String(i.title||'').replace(/\s*(제?\s*[\dA-Z]+층|제?\s*[\dA-Z-]+호|외\s*\d+[건필]).*$/,'').trim();
+  const uniq=(arr,n)=>{const seen=new Set(),out=[];for(const i of arr){const k=bkey(i);if(seen.has(k))continue;seen.add(k);out.push(i);if(out.length>=n)break}return out};
+  const cheap=uniq(live.filter(i=>cheapOK(i)&&i.compare.count>=5&&i.compare.minVsEst<=-30&&i.compare.minVsEst>-60).sort((a,b)=>a.compare.minVsEst-b.compare.minVsEst),10);
+  const now=Date.now();
+  const soon=live.filter(i=>{const t=Date.parse((i.bidEnd||'').replace(' ','T')+':00+09:00');return t>now&&t-now<3*864e5}).sort((a,b)=>(a.bidEnd||'').localeCompare(b.bidEnd||''));
+  const today=live.filter(i=>(i.bidStart||'').slice(0,10)===new Date(now+9*3600e3).toISOString().slice(0,10)).length;
+  const mk=(()=>{try{const s=mktSel&&MKT.data?mktSel():null;return s&&s.last3.rn?s.last3.r/s.last3.rn:null}catch(e){return null}})();
+  if(!MKT.loaded) loadMkt();
+  const rate=RATES?.series?.[0]?.points?.slice(-1)[0]?.v??RATES?.series?.[0]?.last??null;
+  const ins=(INS.items||[]).slice(0,3);
+  const q=(h,ic,t,c)=>`<a class="aq" href="${h}" ${h==='#ai'?'data-open-chat':''}><span class="aq-ic" style="--qc:${c}">${svg(ic)}</span>${t}</a>`;
+  const nick=AUTH.profile?.nickname;
+  return `<section class="ahome">
+    <div class="ah-hello"><p>${nick?esc(nick)+'님, ':''}오늘의 공매</p><h1>진행 중 <b>${live.length.toLocaleString()}</b>건${today?` · 새로 <b>${today}</b>건`:''}</h1></div>
+    <form class="ah-search" id="appSearch"><span>${svg('ai')}</span><input name="q" placeholder="예: 대구 수성구 3억 이하 아파트 공매" autocomplete="off" enterkeyhint="search"><button type="submit">찾기</button></form>
+    <div class="ah-quick">${q('#listings','map','지도','#3366ff')}${q('#auctions','gavel','공매','#f26b38')}${q('#market','trend','시장 리포트','#16a34a')}${q('#calc','coin','계산기','#d97706')}
+      ${q('#ai','ai','AI 상담','#7c5cff')}${q('#community','chat','커뮤니티','#0ea5e9')}${q('#support','book','지원사업','#db2777')}${q('#rates','down','금리','#475569')}</div>
+    <div class="ah-stats"><div><span>평균 낙찰가율</span><b>${mk!=null?mk.toFixed(1)+'%':'-'}</b><small>최근 3개월</small></div><div><span>3일 내 마감</span><b>${soon.length.toLocaleString()}건</b><small>입찰 마감 기준</small></div><div><span>기준금리</span><b>${rate!=null?rate+'%':'-'}</b><small>한국은행</small></div></div>
+    ${cheap.length?`<div class="ah-head"><h2>시세보다 싸게 나온 공매</h2><a href="#auctions">전체</a></div><div class="ah-scroll">${cheap.map(aucCard).join('')}</div>`:''}
+    ${soon.length?`<div class="ah-head"><h2>마감 임박</h2><a href="#auctions">전체</a></div><div class="ah-list">${uniq(soon,5).map(i=>{const [dl]=aucDday(i);return `<a href="#auc-${esc(i.id)}"><span class="ah-dd">${esc(dl)}</span><span class="ah-tt"><b>${esc(i.title)}</b><small>${esc(i.sgg||i.sido||'')} · 최저가 ${wonKRW(i.minp)}${i.ratio?` · 감정가의 ${Math.round(i.ratio)}%`:''}</small></span>${svg('chev')}</a>`}).join('')}</div>`:''}
+    ${ins.length?`<div class="ah-head"><h2>이번 주 부동산 정책</h2><a href="#insight">전체</a></div><div class="ah-list">${ins.map(n=>`<a href="#ins-${esc(n.id)}"><span class="ah-dd pol">${esc((n.ministry||'정책').replace('국토교통부','국토부').slice(0,4))}</span><span class="ah-tt"><b>${esc(n.title)}</b><small>${esc((n.date||'').slice(0,10).replace(/-/g,'.'))}</small></span>${svg('chev')}</a>`).join('')}</div>`:''}
+  </section>`;
+}
+function appMenuHtml(){
+  const dark=document.documentElement.dataset.theme==='dark';
+  return `<section class="amenu"><h2>설정·정보</h2>
+    <button type="button" class="am-row" id="appTheme"><span>${svg(dark?'sun':'moon')}</span>${dark?'밝은 화면으로 보기':'어두운 화면으로 보기'}</button>
+    <a class="am-row" href="#terms"><span>${svg('book')}</span>이용약관</a>
+    <a class="am-row" href="#privacy"><span>${svg('book')}</span>개인정보처리방침</a>
+    <a class="am-row" href="mailto:${esc(COMPANY.email)}"><span>${svg('chat')}</span>문의하기 <small>${esc(COMPANY.email)}</small></a>
+    <div class="am-co"><b>${esc(COMPANY.name)}</b> · 대표 ${esc(COMPANY.ceo)}<br>사업자등록번호 ${esc(COMPANY.bizNo)}<br>${esc(COMPANY.address)}<br><span>공매·실거래·공고 정보는 공공기관 공개 자료이고, 시세 추정과 AI 답변은 참고용입니다.</span></div>
+    <p class="am-ver">리얼픽 앱 · 웹 버전 ${esc(LEGAL_DATE)}</p></section>`;
+}
+document.addEventListener('submit',e=>{if(e.target.id!=='appSearch')return;e.preventDefault();const v=e.target.q.value.trim();if(!v)return;if(needsConsent&&needsConsent()){location.hash='#join';return}openChat(v)});
+document.addEventListener('click',e=>{if(e.target.closest('#appTheme')){document.getElementById('themeBtn')?.click();render()}});
 function route(){return (location.hash||'#home').slice(1)||'home'}
 let PAINTED=null;   // 마지막으로 그린 페이지: 같은 페이지를 데이터 때문에 다시 그릴 땐 깜빡임 효과를 넣지 않는다
 function render(){
@@ -3853,7 +3971,7 @@ function render(){
   else if(r.startsWith('l-')){html=viewListingDetail(r.slice(2));nav='listings'}
   else if(r==='admin'){html=viewAdmin();nav=''}
   else if(r==='auctions') html=viewAuctions();
-  else if(r==='my'){html=viewMy();nav=''}
+  else if(r==='my'){html=viewMy()+(APP_UI?appMenuHtml():'');nav=''}
   else if(r==='terms'){html=viewTerms();nav=''}
   else if(r==='privacy'){html=viewPrivacy();nav=''}
   else if(r.startsWith('auc-')){html=viewAuction(r.slice(4));nav='auctions'}
@@ -3869,12 +3987,13 @@ function render(){
   else if(r==='analyze'||r.startsWith('analyze?')){html=viewAnalyze();nav='auctions'}
   else if(r==='support'){html=viewSupport();nav='insight'}
   else if(r.startsWith('notice-')){html=viewNotice(r.slice(7));nav='insight'}
-  else {html=viewHome();nav='home'}
+  else {html=APP_UI?viewAppHome():viewHome();nav='home'}
   const joinbar=needsConsent()&&!html.includes('id="consentForm"')?`<a class="joinbar" href="#join"><b>가입을 마무리해 주세요</b><span>닉네임·약관 동의를 마치면 관심 목록·글쓰기·AI 상담을 쓸 수 있어요</span><i>→</i></a>`:'';
   app.innerHTML=`${joinbar}<div class="view${r!==PAINTED?' enter':''}">${html}</div>`; PAINTED=r;
   renderBookmarks();
   const run=AFTER; AFTER=[]; run.forEach(fn=>{try{fn()}catch(e){console.error(e)}});
   document.querySelectorAll('[data-nav]').forEach(a=>{a.dataset.nav===nav?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
+  if(APP_UI) paintAppTop(r);
   paintArt(); if(r==='listings') paintMap();
   if(document.body.classList.contains('dock')&&window.__quotaUid!==uid()){window.__quotaUid=uid();refreshQuota()}
 }
@@ -4081,11 +4200,23 @@ addEventListener('beforeinstallprompt',e=>{e.preventDefault();DEFER_INSTALL=e;sh
 function installSnoozed(){try{return Date.now()<+(localStorage.getItem('rp_install_snooze')||0)}catch(e){return false}}
 function showInstallBar(){
   if(IS_APP||installSnoozed()||document.documentElement.classList.contains('embed')||document.getElementById('installBar')) return;
-  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!/crios|fxios/i.test(navigator.userAgent);
-  if(!DEFER_INSTALL&&!ios) return;
+  const ua=navigator.userAgent;
+  const inApp=/NAVER|KAKAOTALK|Instagram|FBAN|FBAV|Line\/|DaumApps|whale.*mobile/i.test(ua)&&!/SamsungBrowser/i.test(ua);
+  const ios=/iphone|ipad|ipod/i.test(ua)&&!/crios|fxios/i.test(ua)&&!inApp;
+  const android=/android/i.test(ua);
+  if(!DEFER_INSTALL&&!ios&&!inApp&&!(android&&/SamsungBrowser/i.test(ua))) return;
   if(innerWidth>900) return;
   const b=document.createElement('div');b.id='installBar';b.className='install-bar';
-  b.innerHTML=`<img src="icons/icon-96.png" alt=""><div><b>리얼픽 앱으로 보기</b><span>${DEFER_INSTALL?'홈 화면에 설치하면 앱처럼 바로 열려요':'Safari 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b>'}</span></div>${DEFER_INSTALL?'<button type="button" class="btn primary sm" id="installGo">설치</button>':''}<button type="button" class="install-x" id="installX" aria-label="닫기">×</button>`;
+  // 네이버·카카오톡 등 앱 안 브라우저: 설치가 안 되므로 크롬(안드로이드)·Safari(아이폰)로 열도록 안내
+  const here=location.href.replace(/^https?:\/\//,'');
+  const chromeIntent=`intent://${here.split('#')[0]}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(location.href)};end`;
+  const msg=DEFER_INSTALL?'홈 화면에 설치하면 앱처럼 바로 열려요'
+    :inApp?(android?'이 화면에서는 설치가 안 돼요. <b>크롬</b>에서 열어 설치해 주세요':'오른쪽 아래·위 <b>⋯</b> 메뉴 → <b>Safari로 열기</b> 후 설치해 주세요')
+    :ios?'Safari 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b>'
+    :'메뉴(≡) → <b>현재 페이지 추가</b> → <b>홈 화면</b>';
+  const btn=DEFER_INSTALL?'<button type="button" class="btn primary sm" id="installGo">설치</button>'
+    :(inApp&&android)?`<a class="btn primary sm" href="${chromeIntent}">크롬으로 열기</a>`:'';
+  b.innerHTML=`<img src="icons/icon-96.png" alt=""><div><b>리얼픽 앱으로 보기</b><span>${msg}</span></div>${btn}<button type="button" class="install-x" id="installX" aria-label="닫기">×</button>`;
   document.body.appendChild(b);
   document.getElementById('installGo')?.addEventListener('click',async()=>{b.remove();DEFER_INSTALL.prompt();try{await DEFER_INSTALL.userChoice}catch(e){}DEFER_INSTALL=null});
   document.getElementById('installX').addEventListener('click',()=>{b.remove();try{localStorage.setItem('rp_install_snooze',String(Date.now()+14*864e5))}catch(e){}});
