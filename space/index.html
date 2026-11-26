@@ -211,6 +211,7 @@ const TSZ={wood:1.6,wood2:1.6,tile:1.2,dtile:1.2,btile:1.2,carpet:2,stone:1.2};
 function floorMat(kind,w,d){const t=texOf(kind).clone();t.needsUpdate=true;t.repeat.set(w/TSZ[kind],d/TSZ[kind]);return new THREE.MeshStandardMaterial({map:t,roughness:kind.startsWith('wood')?.55:.7,metalness:0,envMapIntensity:.35})}
 const floorKind=()=>({apt:'wood',house:'wood',cafe:'wood',holdem:'wood2',office:'carpet',bbq:'dtile',pizza:'tile'})[S.concept]||'tile';
 const STEEL={metalness:.55,roughness:.35},GLASS={transparent:true,opacity:.25,roughness:.1};
+const LOWH=1.45;/* 낮춘 벽 높이: 창문(0.9m부터)이 보이도록 */
 let ROUND=0;const GC={};function geo(w,h,d){if(!ROUND||!THREE.RoundedBoxGeometry||Math.min(w,h,d)<.03)return new THREE.BoxGeometry(w,h,d);const r=Math.min(.035,Math.min(w,h,d)*.22),k=[w,h,d,r].map(v=>v.toFixed(3)).join('|');return GC[k]||(GC[k]=new THREE.RoundedBoxGeometry(w,h,d,2,r))}
 function box(g,w,h,d,c,x,y,z,o){const m=new THREE.Mesh(geo(w,h,d),M(c,o));m.position.set(x,y+h/2,z);m.castShadow=!(o&&o.transparent);m.receiveShadow=true;g.add(m);return m}
 function cyl(g,rt,rb,h,c,x,y,z,o,seg=24){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),M(c,o));m.position.set(x,y+h/2,z);m.castShadow=m.receiveShadow=true;g.add(m);return m}
@@ -319,11 +320,15 @@ function drawWall(g,w,h,col,th,list){const fr='#2f3338',base=w.h?0:-Math.PI/2;
  const tag=(m,ud)=>{m.traverse(x=>{if(x.isMesh){x.userData=ud;list.push(x)}})};
  const seg=(p,q,y0,y1,c,o,ud,tk=th)=>{y1=Math.min(y1,h);if(q-p<.005||y1-y0<.005)return;const m=w.h?box(g,q-p,y1-y0,tk,c,(p+q)/2,y0,w.c,o):box(g,tk,y1-y0,q-p,c,w.c,y0,(p+q)/2,o);tag(m,ud);if(y1>=h-.001&&!(o&&o.transparent)){const cp=w.h?box(g,q-p,.012,tk+.004,'#3d424a',(p+q)/2,y1,w.c):box(g,tk+.004,.012,q-p,'#3d424a',w.c,y1,(p+q)/2);cp.castShadow=false;tag(cp,ud)}};
  const panels=(p,q,y0,y1,n,zig,ud)=>{const cut=y1>h+.001;y1=Math.min(y1,h);const H=y1-y0;if(H<.05)return;const L=q-p,u=L/n,FR='#dfe4ea',GL={transparent:true,opacity:.5,roughness:.05,metalness:.1,envMapIntensity:1.2};
-  if(cut){/* 낮은 벽: 도면의 창 표시처럼 흰 창틀 두 줄 + 가운데 유리 */
-   const off=th/2-.02,P=(a,b,y,hh,dd,c,o,od)=>{const m=w.h?box(g,b-a,hh,dd,c,(a+b)/2,y,w.c+od,o):box(g,dd,hh,b-a,c,w.c+od,y,(a+b)/2,o);m.castShadow=false;tag(m,ud);return m};
-   P(p,q,y0,H,.04,FR,undefined,-off);P(p,q,y0,H,.04,FR,undefined,off);P(p+.02,q-.02,y0,H,.014,'#6fa6e0',GL,0);
-   for(let i=0;i<=n;i++){const x=p+u*i;P(Math.max(p,x-.025),Math.min(q,x+.025),y0,H,th,FR,undefined,0)}
-   P(p,q,y1,.008,.03,'#3f78c4',undefined,0);P(p,q,y1,.006,th+.01,'#cfd6df',undefined,0);return}
+  if(cut){/* 낮은 벽: 잘린 창문을 창틀·유리·창살로 또렷하게 */
+   const P=(a,b,y,hh,dd,c,o,od)=>{const m=w.h?box(g,b-a,hh,dd,c,(a+b)/2,y,w.c+od,o):box(g,dd,hh,b-a,c,w.c+od,y,(a+b)/2,o);m.castShadow=false;tag(m,ud);return m};
+   const FW='#fbfbfa',FE='#7d8794';
+   P(p+.03,q-.03,y0,H,.02,'#7fb6ec',{transparent:true,opacity:.55,roughness:.05,metalness:.1,envMapIntensity:1.3},0);
+   P(p,q,y0,.05,th+.04,FW,undefined,0);P(p,q,y0+.05,.006,th+.05,FE,undefined,0);
+   for(const x of[p,q])P(x-.035,x+.035,y0,H,th+.02,FW,undefined,0);
+   const k=Math.max(2,n*2);for(let i=1;i<k;i++){const x=p+L*i/k;P(x-.018,x+.018,y0,H,.06,i%2?'#e9ecef':FW,undefined,0)}
+   P(p,q,y1,.01,th+.02,FE,undefined,0);P(p,q,y1+.01,.006,.05,'#3f78c4',undefined,0);
+   const s2=w.h?box(g,q-p+.1,.03,.12,FW,(p+q)/2,y0-.03,w.c+(w.inward||1)*(th/2+.04)):box(g,.12,.03,q-p+.1,FW,w.c+(w.inward||1)*(th/2+.04),y0-.03,(p+q)/2);s2.castShadow=false;tag(s2,ud);return}
   for(let i=0;i<n;i++){const pg=new THREE.Group(),m=p+u*(i+.5);pg.position.set(w.h?m:w.c,y0,w.h?w.c:m);pg.rotation.y=base+(zig?(i%2?.2:-.2):0);box(pg,u-.04,H-.06,.02,'#a9cdf2',0,.03,0,GL);box(pg,.035,H,.06,FR,-u/2+.0175,0,0);box(pg,.035,H,.06,FR,u/2-.0175,0,0);box(pg,u,.035,.06,FR,0,0,0);box(pg,u,.035,.06,FR,0,H-.035,0);g.add(pg);tag(pg,ud)}};
  const ops=w.ops.map(o=>({o,p:o.s-o.w/2,q:o.s+o.w/2})).sort((x,y)=>x.p-y.p);
  let cur=w.a;for(const x of ops){seg(cur,Math.max(cur,x.p),0,h,col,undefined,{w});cur=Math.max(cur,x.q)}seg(cur,w.b,0,h,col,undefined,{w});
@@ -344,7 +349,7 @@ function designWalls(rooms){const segs=[],gaps=[];
 let wsel=null,hl=null;
 const curWall=()=>wsel?(wsel.side?S.ext&&S.ext[wsel.side]:wsel.iw):null;
 const curOp=()=>{const w=curWall();if(!w||!wsel.op)return null;return wsel.op==='entry'?w.ops.find(o=>o.entry):wsel.op};
-function drawHL(){if(hl){hl.parent&&hl.parent.remove(hl);hl.geometry.dispose();hl=null}const w=curWall();if(!w)return;const op=curOp(),h=S.high?S.H:1.1;
+function drawHL(){if(hl){hl.parent&&hl.parent.remove(hl);hl.geometry.dispose();hl=null}const w=curWall();if(!w)return;const op=curOp(),h=S.high?S.H:LOWH;
  const p=op?op.s-op.w/2:w.a,q=op?op.s+op.w/2:w.b,top=op?Math.min(h,Math.max(OP[op.t].top>50?h:OP[op.t].top,.3)):h,th=.3,L=q-p;
  hl=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w.h?L:th,top,w.h?th:L)),new THREE.LineBasicMaterial({color:0x1240e0,depthTest:false}));hl.renderOrder=10;
  hl.position.set(w.h?(p+q)/2:w.c,top/2,w.h?w.c:(p+q)/2);(w.side||w.world?scene:intG).add(hl)}
@@ -354,7 +359,7 @@ function buildRoom(){clearG(roomG);const{W,D,H}=S,{off}=frame();
  if(S.planURL&&S.showPlan){if(!planTex||planTex._url!==S.planURL){planTex=new THREE.TextureLoader().load(S.planURL);planTex.encoding=THREE.sRGBEncoding;planTex._url=S.planURL}fm=new THREE.MeshStandardMaterial({map:planTex,roughness:.95})}
  const fl=new THREE.Mesh(new THREE.PlaneGeometry(W,D).rotateX(-Math.PI/2),fm);fl.position.set(W/2,0,D/2);fl.receiveShadow=true;roomG.add(fl);
  if(!(S.planURL&&S.showPlan)){const pts=[];for(let x=1;x<W;x++)pts.push(x,.004,0,x,.004,D);for(let z=1;z<D;z++)pts.push(0,.004,z,W,.004,z);const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));roomG.add(new THREE.LineSegments(gg,new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:.05})))}
- const h=S.high?H:1.1,dw=S.entry.w;WMe=[];S.ext={};for(const w of extWalls()){S.ext[w.side]=w;drawWall(roomG,w,h,'#f3f1ec',.15,WMe)}
+ const h=S.high?H:LOWH,dw=S.entry.w;WMe=[];S.ext={};for(const w of extWalls()){S.ext[w.side]=w;drawWall(roomG,w,h,'#f3f1ec',.15,WMe)}
  for(const w of[...S.dWalls,...S.uWalls])drawWall(roomG,w,h,'#ecebe6',.1,WMe);
  for(const side of['top','bottom','left','right'])for(const o of S.ops[side])if(o.label){const out=.9,p={top:[o.s,-out],bottom:[o.s,S.D+out],left:[-out,o.s],right:[S.W+out,o.s]}[side],l=label(o.label,0,.8);l.position.set(p[0],.3,p[1]);roomG.add(l)}
  for(const r of[...(S.design?S.design.rooms:[]),...S.uRooms]){const rw=r.x1-r.x0,rd=r.z1-r.z0;if(/화장실|욕실|샤워|세탁|현관/.test(r.n)){const fk=/현관/.test(r.n)?'stone':'btile',p=new THREE.Mesh(new THREE.PlaneGeometry(rw,rd).rotateX(-Math.PI/2),floorMat(fk,rw,rd));p.receiveShadow=true;p.position.set((r.x0+r.x1)/2,.005,(r.z0+r.z1)/2);roomG.add(p)}const l=label(r.n,0,.7);l.position.set((r.x0+r.x1)/2,.06,(r.z0+r.z1)/2);roomG.add(l)}
@@ -440,7 +445,7 @@ function furnishRooms(rooms,add,blk,Dl){
   else if((r.f||r.n)==='다용도실'){wp(r,head,h0+.42,'washer');wp(r,head,h0+1.12,'washer');wp(r,head,h1-.5,'cabinet')}
   else if((r.f||r.n)==='드레스룸'){wp(r,head,(h0+h1)/2,'wardrobe',{len:snap(Math.min(h1-h0-.2,2.4))});const[a,b]=along(r,sLo);if(b-a>2.2)wp(r,sLo,(a+b)/2,'wardrobe',{len:snap(Math.min(b-a-1.4,2))})}
   if(r.closed)blk.push([r.x0,r.z0,r.x1,r.z1])}}
-function buildInterior(){clearG(intG);WMi=[];if(!S.res){drawHL();return}const h=S.high?S.H:1.1,wc='#f6f4ef';
+function buildInterior(){clearG(intG);WMi=[];if(!S.res){drawHL();return}const h=S.high?S.H:LOWH,wc='#f6f4ef';
  WMi=[];for(const w of S.res.walls)drawWall(intG,w,h,wc,.1,WMi);
  for(const r of S.res.rooms){const W=r.x1-r.x0,D=r.z1-r.z0;if(r.bath||r.hall){const p=new THREE.Mesh(new THREE.PlaneGeometry(W,D).rotateX(-Math.PI/2),floorMat(r.bath?'btile':'stone',W,D));p.position.set((r.x0+r.x1)/2,.004,(r.z0+r.z1)/2);p.receiveShadow=true;intG.add(p)}
   const l=label(r.n+' '+(W*D).toFixed(1)+'㎡',0,.75);l.position.set((r.x0+r.x1)/2,.06,r.opensTo?(r.z0+r.z1)/2:r.z0+Math.min(.5,D/2));intG.add(l)};drawHL()}
