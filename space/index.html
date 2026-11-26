@@ -159,7 +159,8 @@ h3{font-size:14px;margin:14px 0 6px}
 <script>
 /* 리얼픽 연결: 같은 사이트의 로그인(회원)으로 AI를 쓰고, 동의한 경우 배치 자료를 리얼픽 서버에 쌓습니다 */
 (function(){const C=window.REALPICK_CONFIG||{};if(!C.supabaseUrl||!C.supabaseAnonKey)return;
- let sb=null;try{sb=window.supabase&&window.supabase.createClient(C.supabaseUrl,C.supabaseAnonKey)}catch(e){}
+ let sb=null;try{if(window.parent!==window&&window.parent.RP_SB)sb=window.parent.RP_SB}catch(e){}
+ if(!sb)try{sb=window.supabase&&window.supabase.createClient(C.supabaseUrl,C.supabaseAnonKey)}catch(e){}
  window.RP={sb,anon:C.supabaseAnonKey};
  window.SPACE_CONFIG={name:'리얼픽 스토어핏',brand:'#3366ff',aiProxy:C.supabaseUrl+'/functions/v1/space-ai',
   getToken:async()=>{if(!sb)return null;try{const{data}=await sb.auth.getSession();return data.session?data.session.access_token:null}catch(e){return null}}};})();
@@ -631,7 +632,7 @@ if(CFG.aiProxy){
  const trainSync=()=>{const on=!!RPuser;$('#loginNote').hidden=on;$('#trainRow').hidden=$('#trainInfo').hidden=!on;$('#aiBtn').disabled=!on;$('#saveRow').hidden=!(on&&$('#trainOk').checked)};
  if(LS.get('rp_space_train')==='1')$('#trainOk').checked=true;
  $('#trainOk').onchange=()=>{LS.set('rp_space_train',$('#trainOk').checked?'1':null);trainSync()};
- if(RPsb){RPsb.auth.getSession().then(({data})=>{RPuser=data.session?data.session.user:null;trainSync()});RPsb.auth.onAuthStateChange((_e,ses)=>{RPuser=ses?ses.user:null;trainSync()})}else trainSync();
+ if(RPsb){RPsb.auth.getSession().then(({data})=>{RPuser=data.session?data.session.user:null;trainSync()});const subA=RPsb.auth.onAuthStateChange((_e,ses)=>{try{RPuser=ses?ses.user:null;trainSync()}catch(e){}});addEventListener('pagehide',()=>{try{subA.data.subscription.unsubscribe()}catch(e){}})}else trainSync();
 }
 function worldLayout(){frame();const deg=r=>Math.round(((r*180/Math.PI)%360+360)%360);
  const toW=(g,x,z)=>{const v=g.localToWorld(new THREE.Vector3(x,0,z));return[+v.x.toFixed(2),+v.z.toFixed(2)]};

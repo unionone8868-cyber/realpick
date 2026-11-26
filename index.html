@@ -1387,6 +1387,7 @@ const CFG = window.REALPICK_CONFIG || {};
 const PW_RECOVERY=/type=recovery/.test(location.hash+location.search);
 const sb = (CFG.supabaseUrl && CFG.supabaseAnonKey && window.supabase?.createClient)
   ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey) : null;
+window.RP_SB = sb; // 스토어핏(space/) 화면이 같은 로그인 연결을 쓰도록 공유
 const AUTH = {session:null, agent:null, ready:!sb};
 // 간편 로그인: config.js 의 social 로 켜고 끌 수 있다 (기본: 카카오·네이버·구글)
 // 스토어 앱(웹뷰) 안에서는 구글이 보안 정책상 로그인을 막아서, 앱에서는 구글 버튼을 잠시 숨겨요 (시스템 브라우저 로그인 연결 후 다시 표시)
@@ -4000,6 +4001,8 @@ function route(){return (location.hash||'#home').slice(1)||'home'}
 let PAINTED=null;   // 마지막으로 그린 페이지: 같은 페이지를 데이터 때문에 다시 그릴 땐 깜빡임 효과를 넣지 않는다
 function render(){
   const r=route(); const app=$('#app');
+  // 스토어핏 화면은 이미 떠 있으면 다시 그리지 않음 (다시 그리면 3D 화면이 처음부터 새로 열림)
+  if((r==='space'||r.startsWith('space?'))&&PAINTED===r&&app.querySelector('.spaceframe')){if(APP_UI)paintAppTop(r);return}
   let html, nav=r;
   if(r==='listings'){html=viewMap()}
   else if(r.startsWith('h-')){html=viewHouse(r.slice(2));nav='listings'}
