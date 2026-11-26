@@ -299,18 +299,19 @@ function extWalls(){const t=.15,{W,D}=S,LEN={top:W,bottom:W,left:D,right:D};
 function drawWall(g,w,h,col,th,list){const fr='#2f3338',base=w.h?0:-Math.PI/2;
  const tag=(m,ud)=>{m.traverse(x=>{if(x.isMesh){x.userData=ud;list.push(x)}})};
  const seg=(p,q,y0,y1,c,o,ud,tk=th)=>{y1=Math.min(y1,h);if(q-p<.005||y1-y0<.005)return;const m=w.h?box(g,q-p,y1-y0,tk,c,(p+q)/2,y0,w.c,o):box(g,tk,y1-y0,q-p,c,w.c,y0,(p+q)/2,o);tag(m,ud)};
- const panels=(p,q,y0,y1,n,zig,ud)=>{y1=Math.min(y1,h);const H=y1-y0;if(H<.05)return;const u=(q-p)/n;for(let i=0;i<n;i++){const pg=new THREE.Group(),m=p+u*(i+.5);pg.position.set(w.h?m:w.c,y0,w.h?w.c:m);pg.rotation.y=base+(zig?(i%2?.2:-.2):0);box(pg,u-.04,H-.08,.025,'#bcd3ff',0,.04,0,GLASS);box(pg,.04,H,.06,fr,-u/2+.02,0,0);box(pg,.04,H,.06,fr,u/2-.02,0,0);box(pg,u,.04,.06,fr,0,0,0);box(pg,u,.04,.06,fr,0,H-.04,0);g.add(pg);tag(pg,ud)}};
+ const panels=(p,q,y0,y1,n,zig,ud)=>{const cut=y1>h+.001;y1=Math.min(y1,h);const H=y1-y0;if(H<.05)return;const u=(q-p)/n,FR='#a7b0ba',GL={transparent:true,opacity:.42,roughness:.05,metalness:.1};for(let i=0;i<n;i++){const pg=new THREE.Group(),m=p+u*(i+.5);pg.position.set(w.h?m:w.c,y0,w.h?w.c:m);pg.rotation.y=base+(zig?(i%2?.2:-.2):0);box(pg,u-.03,H-(cut?.02:.05),.02,'#9fc4ee',0,.025,0,GL);box(pg,.025,H,.05,FR,-u/2+.0125,0,0);box(pg,.025,H,.05,FR,u/2-.0125,0,0);box(pg,u,.025,.05,FR,0,0,0);if(!cut)box(pg,u,.025,.05,FR,0,H-.025,0);g.add(pg);tag(pg,ud)}
+  if(cut){const c=w.h?box(g,q-p,.03,th+.04,'#5b9cf0',(p+q)/2,h-.03,w.c):box(g,th+.04,.03,q-p,'#5b9cf0',w.c,h-.03,(p+q)/2);c.castShadow=false;tag(c,ud)}};
  const ops=w.ops.map(o=>({o,p:o.s-o.w/2,q:o.s+o.w/2})).sort((x,y)=>x.p-y.p);
  let cur=w.a;for(const x of ops){seg(cur,Math.max(cur,x.p),0,h,col,undefined,{w});cur=Math.max(cur,x.q)}seg(cur,w.b,0,h,col,undefined,{w});
  for(const{o,p,q}of ops){const T=OP[o.t],ud={w,op:o},L=q-p;if(T.top<h)seg(p,q,T.top,h,col,undefined,ud);
-  if(o.t==='window'){seg(p,q,0,.9,col,undefined,ud);panels(p,q,.9,2.1,Math.max(1,Math.round(L/1.2)),0,ud)}
+  if(o.t==='window'){seg(p,q,0,.9,col,undefined,ud);const sl=w.h?box(g,q-p+.06,.04,th+.1,'#e2ddd4',(p+q)/2,.9,w.c):box(g,th+.1,.04,q-p+.06,'#e2ddd4',w.c,.9,(p+q)/2);tag(sl,ud);panels(p,q,.94,2.1,Math.max(1,Math.round(L/1.2)),0,ud)}
   else if(o.t==='curtain'){panels(p,q,0,h,Math.max(1,Math.round(L/1.2)),0,ud)}
   else if(o.t==='glassdoor'){panels(p,q,0,2.2,2,0,ud)}
   else if(o.t==='folding'){panels(p,q,0,2.4,Math.max(2,Math.round(L/.8)),1,ud)}
   else if(o.t==='door'){const lg=new THREE.Group(),ll=L-.06;box(lg,ll,Math.min(2.05,h),.04,'#a0744f',ll/2,0,0);lg.position.set(w.h?p+.03:w.c,0,w.h?w.c:p+.03);const inn=w.inward||1;lg.rotation.y=w.h?-1.1*inn:-Math.PI/2+1.1*inn;g.add(lg);tag(lg,ud)}
   else if(o.t==='open'){const f=box(g,w.h?L:th+.02,.01,w.h?th+.02:L,'#9c8f80',w.h?(p+q)/2:w.c,0,w.h?w.c:(p+q)/2);f.castShadow=false;tag(f,ud)}}}
 function designWalls(rooms){const segs=[],gaps=[];
- for(const r of rooms){const E={top:[r.z0,r.x0,r.x1,1],bottom:[r.z1,r.x0,r.x1,1],left:[r.x0,r.z0,r.z1,0],right:[r.x1,r.z0,r.z1,0]};
+ for(const r of rooms){if(r.open)continue;const E={top:[r.z0,r.x0,r.x1,1],bottom:[r.z1,r.x0,r.x1,1],left:[r.x0,r.z0,r.z1,0],right:[r.x1,r.z0,r.z1,0]};
   for(const[e,[c,a,b,h]]of Object.entries(E)){if((e==='top'&&c<.05)||(e==='bottom'&&c>S.D-.05)||(e==='left'&&c<.05)||(e==='right'&&c>S.W-.05))continue;segs.push({h,c,a,b});if(r.door&&r.door.wall===e&&b-a>1)gaps.push({h,c,s:clamp(a+r.door.off,a+.5,b-.5)})}}
  const lines={},out=[];for(const s of segs){const k=(s.h?'h':'v')+s.c.toFixed(2);(lines[k]=lines[k]||{h:s.h,c:s.c,iv:[]}).iv.push([s.a,s.b])}
  for(const L of Object.values(lines)){L.iv.sort((p,q)=>p[0]-q[0]);const U=[];for(const v of L.iv){const t=U[U.length-1];if(t&&v[0]<=t[1]+.01)t[1]=Math.max(t[1],v[1]);else U.push([...v])}
@@ -346,7 +347,8 @@ const hit=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1];
 function grid(rect,t,gx,gz,blk){const[w,d]=sizeOf(t,{}),[x0,z0,x1,z1]=rect,nx=Math.floor((x1-x0+gx)/(w+gx)),nz=Math.floor((z1-z0+gz)/(d+gz));if(nx<1||nz<1)return[];const slx=x1-x0-(nx*w+(nx-1)*gx),slz=z1-z0-(nz*d+(nz-1)*gz);let best=[],bs=-1;
  for(let ox=0;ox<=slx+.001;ox+=Math.max(.1,slx/8))for(let oz=0;oz<=slz+.001;oz+=Math.max(.1,slz/6)){const out=[];for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){const x=x0+ox+w/2+i*(w+gx),z=z0+oz+d/2+j*(d+gz);if(blk.some(b=>hit(b,[x-w/2,z-d/2,x+w/2,z+d/2])))continue;out.push({t,x,z,r:0})}const sc=out.length*100-Math.abs(ox-slx/2)-Math.abs(oz-slz/2);if(sc>bs){bs=sc;best=out}}
  return best}
-function autoPlan(){const{Wl,Dl,dx}=frame(),it=[],res=RES.has(S.concept),blk=[res?[dx-.6,Dl-1,dx+.6,Dl+1]:[dx-1,Dl-2.2,dx+1,Dl+1]];S.res=null;
+function autoPlan(extra){const{Wl,Dl,dx}=frame(),it=[],res=RES.has(S.concept)&&!extra,blk=[res?[dx-.6,Dl-1,dx+.6,Dl+1]:[dx-1,Dl-2.2,dx+1,Dl+1]];S.res=null;
+ for(const r of extra||[]){const a=toLocal(r.x0,r.z0),b=toLocal(r.x1,r.z1);blk.push([Math.min(a.x,b.x)-.2,Math.min(a.z,b.z)-.2,Math.max(a.x,b.x)+.2,Math.max(a.z,b.z)+.2])}
  for(const c of S.cols){const p=toLocal(c.x,c.z),m=Math.max(c.w,c.d)/2+.25;blk.push([p.x-m,p.z-m,p.x+m,p.z+m])}
  const inside=(t,x,z,r,o)=>{const[w,d]=sizeOf(t,o,r);return x-w/2>=-.01&&x+w/2<=Wl+.01&&z-d/2>=-.01&&z+d/2<=Dl+.01};
  const add=(t,x,z,r=0,o,free,m=.3)=>{o=o||(CAT[t].def?{...CAT[t].def}:undefined);if(!inside(t,x,z,r,o||{}))return false;const[w,d]=sizeOf(t,o||{},r),bb=[x-w/2,z-d/2,x+w/2,z+d/2];if(!free&&blk.some(b=>hit(b,bb)))return false;it.push({t,x,z,r,o});blk.push([bb[0]-m,bb[1]-m,bb[2]+m,bb[3]+m]);return true};
@@ -393,23 +395,26 @@ function resPlan(house,Wl,Dl,dx,add,blk){
  for(const L of Object.values(lines)){L.iv.sort((p,q)=>p[0]-q[0]);const U=[];for(const v of L.iv){const t=U[U.length-1];if(t&&v[0]<=t[1]+.01)t[1]=Math.max(t[1],v[1]);else U.push([...v])}
   const G=gaps.filter(g=>g.h===L.h&&Math.abs(g.c-L.c)<.01);for(const u of U)walls.push({h:L.h,c:L.c,a:u[0],b:u[1],lo:u[0],hi:u[1],inward:1,ops:G.filter(g=>g.a>=u[0]-.01&&g.b<=u[1]+.01).map(g=>({t:'door',w:.9,s:(g.a+g.b)/2}))})}
  S.res={rooms,walls,gaps};
+ furnishRooms(rooms,add,blk,Dl)}
+function furnishRooms(rooms,add,blk,Dl){
  const opp={top:'bottom',bottom:'top',left:'right',right:'left'},along=(r,e)=>e==='top'||e==='bottom'?[r.x0,r.x1]:[r.z0,r.z1],sides=e=>e==='top'||e==='bottom'?['left','right']:['top','bottom'];
  const fits=(r,t,x,z,rot,o)=>{const[w,d]=sizeOf(t,o||CAT[t].def||{},rot);return x-w/2>=r.x0+.03&&x+w/2<=r.x1-.03&&z-d/2>=r.z0+.03&&z+d/2<=r.z1-.03};
  const put=(r,t,x,z,rot=0,o,free)=>fits(r,t,x,z,rot,o)&&add(t,x,z,rot,o,free,.05);
- const wp=(r,e,s,t,o,free)=>{const d=sizeOf(t,o||{})[1],p={top:[s,r.z0+d/2+.06,0],bottom:[s,r.z1-d/2-.06,Math.PI],left:[r.x0+d/2+.06,s,Math.PI/2],right:[r.x1-d/2-.06,s,-Math.PI/2]}[e];return put(r,t,p[0],p[1],p[2],o,free)};
+ const wp1=(r,e,s,t,o,free)=>{const d=sizeOf(t,o||{})[1],p={top:[s,r.z0+d/2+.06,0],bottom:[s,r.z1-d/2-.06,Math.PI],left:[r.x0+d/2+.06,s,Math.PI/2],right:[r.x1-d/2-.06,s,-Math.PI/2]}[e];return put(r,t,p[0],p[1],p[2],o,free)};
+ const wp=(r,e,s,t,o,free)=>{for(const dd of[0,.2,-.2,.4,-.4,.6,-.6,.8,-.8,1,-1,1.3,-1.3,1.6,-1.6,2,-2])if(wp1(r,e,s+dd,t,o,free))return true;return false};
  const ord=[...rooms].sort((a,b)=>(b.opensTo?2:b.closed?1:0)-(a.opensTo?2:a.closed?1:0));
  for(const r of ord){const W=r.x1-r.x0,D=r.z1-r.z0,cx=(r.x0+r.x1)/2,cz=(r.z0+r.z1)/2,head=r.door?opp[r.door.e]:'top',[h0,h1]=along(r,head),[sLo,sHi]=sides(head),near={top:r.z0,bottom:r.z1,left:r.x0,right:r.x1}[head],far={top:r.z1,bottom:r.z0,left:r.x1,right:r.x0}[head],dir=head==='top'||head==='left'?1:-1;
   if(r.studio){wp(r,'top',r.x0+.75,'bed1');wp(r,'left',r.z1-1.8,'kitchen',{len:snap(Math.min(2.4,D-1.6))});put(r,'table2',cx,cz+.3)||put(r,'table2',cx-.8,cz+.3);wp(r,'right',r.z1-1.6,'sofa')}
-  else if(r.n==='거실'){if(W>=3.3){wp(r,'left',cz,'sofa');wp(r,'right',cz,'tvset');put(r,'coffee',(r.x0+.95+r.x1-.5)/2,cz,Math.PI/2)}else{wp(r,'top',cx,'tvset');put(r,'sofa',cx,r.z1-.6,Math.PI)}put(r,'plant',r.x0+.35,r.z0+.35)||put(r,'plant',r.x1-.35,r.z0+.35)}
+  else if((r.f||r.n)==='거실'){if(W>=3.3){wp(r,'left',cz,'sofa');wp(r,'right',cz,'tvset');put(r,'coffee',(r.x0+.95+r.x1-.5)/2,cz,Math.PI/2)}else{wp(r,'top',cx,'tvset');put(r,'sofa',cx,r.z1-.6,Math.PI)}put(r,'plant',r.x0+.35,r.z0+.35)||put(r,'plant',r.x1-.35,r.z0+.35)}
   else if(r.kit){const e=r.z1>Dl-.01?'bottom':'top',[a,b]=along(r,e),len=snap(Math.min(b-a-.3,3.6));if(len>=1.6)wp(r,e,(a+b)/2,'kitchen',{len});put(r,'table4',cx,e==='bottom'?(r.z0+r.z1-.9)/2:(r.z0+.9+r.z1)/2)||put(r,'table2',cx,cz)}
-  else if(/^(안방|침실)/.test(r.n)){const master=r.n==='안방',bt=master?'bed2':'bed1',bw=CAT[bt].w,span=h1-h0,ws=r.door&&r.door.e===sHi?sLo:sHi,useW=span-.66>=bw+.15;
+  else if(/^(안방|침실)/.test(r.f||r.n)){const master=(r.f||r.n)==='안방',bt=master?'bed2':'bed1',bw=CAT[bt].w,span=h1-h0,ws=r.door&&r.door.e===sHi?sLo:sHi,useW=span-.66>=bw+.15;
    const bc=useW?(ws===sHi?h0+(span-.66)/2:h0+.66+(span-.66)/2):(h0+h1)/2;wp(r,head,bc,bt);
    if(useW){const dn=head==='top'||head==='bottom'?D:W,len=snap(Math.min(2.4,dn-(r.ens?2.6:1.1)));if(len>=.9)wp(r,ws,near+dir*(len/2+.08),'wardrobe',{len})}
    if(!master)wp(r,ws===sHi?sLo:sHi,far-dir*.75,'desk1')}
   else if(r.bath){if(Math.min(W,D)>=2&&h1-h0>=1.8)wp(r,head,h0+.88,'bath');else wp(r,head,h1-.52,'shower');const[a,b]=along(r,sLo);wp(r,sLo,(a+b)/2+dir*.15,'toilet');wp(r,sHi,(a+b)/2+dir*.15,'sink')||wp(r,sHi,far-dir*.5,'sink')}
   else if(r.hall){if(W>=1.3)wp(r,'left',r.z1-.8,'shoes',null,true)}
-  else if(r.n==='다용도실'){wp(r,head,h0+.42,'washer');wp(r,head,h0+1.12,'washer');wp(r,head,h1-.5,'cabinet')}
-  else if(r.n==='드레스룸'){wp(r,head,(h0+h1)/2,'wardrobe',{len:snap(Math.min(h1-h0-.2,2.4))});const[a,b]=along(r,sLo);if(b-a>2.2)wp(r,sLo,(a+b)/2,'wardrobe',{len:snap(Math.min(b-a-1.4,2))})}
+  else if((r.f||r.n)==='다용도실'){wp(r,head,h0+.42,'washer');wp(r,head,h0+1.12,'washer');wp(r,head,h1-.5,'cabinet')}
+  else if((r.f||r.n)==='드레스룸'){wp(r,head,(h0+h1)/2,'wardrobe',{len:snap(Math.min(h1-h0-.2,2.4))});const[a,b]=along(r,sLo);if(b-a>2.2)wp(r,sLo,(a+b)/2,'wardrobe',{len:snap(Math.min(b-a-1.4,2))})}
   if(r.closed)blk.push([r.x0,r.z0,r.x1,r.z1])}}
 function buildInterior(){clearG(intG);WMi=[];if(!S.res){drawHL();return}const h=S.high?S.H:1.1,wc='#f6f4ef';
  WMi=[];for(const w of S.res.walls)drawWall(intG,w,h,wc,.1,WMi);
@@ -424,7 +429,17 @@ function autoOps(){if(!S.opsAuto)return;const o={top:[],bottom:[],left:[],right:
   for(const r of S.res.rooms.filter(r=>r.z0<.01&&!r.opensTo&&!r.bath)){const ww=snap(Math.min(r.x1-r.x0-.8,/거실/.test(r.n)?3.2:2));if(ww<.8)continue;const p=furnG.localToWorld(new THREE.Vector3((r.x0+r.x1)/2,0,0));o[back].push({t:'window',w:ww,s:snap(hz?p.x:p.z)})}}
  else{const len=S.door==='top'||S.door==='bottom'?S.W:S.D,e=clamp(S.off,.6,len-.6);for(const[a,b]of[[0,e-.9],[e+.9,len]]){const L=b-a;if(L>=2)o[S.door].push({t:'window',w:snap(Math.min(L-.8,3)),s:snap((a+b)/2)})}}
  S.ops=o}
-function layout(){hist=[];$('#undo').disabled=true;wsel=null;let items;if(S.design){frame();S.res=null;const a=furnG.rotation.y;items=S.design.items.map(i=>{const p=toLocal(i.x,i.z),c=CAT[i.t];return{t:i.t,x:p.x,z:p.z,r:i.deg*Math.PI/180-a,o:c.def?{len:i.len||c.def.len}:undefined}})}else items=autoPlan();restore(items);autoOps();buildRoom();buildInterior();stats();inspect()}
+const roomKind=n=>/안방|부부|마스터/.test(n)?'안방':/욕실|화장실|샤워|파우더/.test(n)?'bath':/주방|부엌|식당|다이닝/.test(n)?'kit':/현관/.test(n)?'hall':/거실|리빙|라운지/.test(n)?'거실':/드레스|옷방/.test(n)?'드레스룸':/세탁|다용도|보일러|유틸/.test(n)?'다용도실':/발코니|베란다|계단|수납|창고|팬트리|복도|테라스/.test(n)?'':/방|침실|룸/.test(n)?'침실':'';
+function furnishDesign(){const D=S.design,out=[],blk=[];
+ for(const i of D.items){const[w,d]=sizeOf(i.t,{len:i.len||(CAT[i.t].def||{}).len},i.deg*Math.PI/180);blk.push([i.x-w/2-.1,i.z-d/2-.1,i.x+w/2+.1,i.z+d/2+.1])}
+ for(const r of D.rooms)if(r.door&&!r.open){const L=r.door.wall==='top'||r.door.wall==='bottom'?r.x1-r.x0:r.z1-r.z0,s=clamp(r.door.off,.5,L-.5),c={top:r.z0,bottom:r.z1,left:r.x0,right:r.x1}[r.door.wall];if(r.door.wall==='top'||r.door.wall==='bottom')blk.push([r.x0+s-.45,c-.55,r.x0+s+.45,c+.55]);else blk.push([c-.55,r.z0+s-.45,c+.55,r.z0+s+.45])}
+ const add=(t,x,z,rot=0,o,free,m=.3)=>{o=o||(CAT[t].def?{...CAT[t].def}:undefined);const[w,d]=sizeOf(t,o||{},rot),bb=[x-w/2,z-d/2,x+w/2,z+d/2];if(bb[0]<-.01||bb[1]<-.01||bb[2]>S.W+.01||bb[3]>S.D+.01)return false;if(!free&&blk.some(b=>hit(b,bb)))return false;out.push({t,x,z,deg:rot*180/Math.PI,len:o&&o.len||null});blk.push([bb[0]-m,bb[1]-m,bb[2]+m,bb[3]+m]);return true};
+ const has=r=>D.items.some(i=>i.x>r.x0&&i.x<r.x1&&i.z>r.z0&&i.z<r.z1);
+ const rooms=D.rooms.filter(r=>!has(r)).map(r=>{const k=roomKind(r.n);return k?{n:r.n,f:k,x0:r.x0,z0:r.z0,x1:r.x1,z1:r.z1,closed:!r.open,bath:k==='bath',kit:k==='kit',hall:k==='hall',door:r.door?{e:r.door.wall}:null}:null}).filter(Boolean);
+ furnishRooms(rooms,add,blk,S.D);return out}
+function layout(){hist=[];$('#undo').disabled=true;wsel=null;let items;
+ if(S.design&&!S.design.items.length&&!RES.has(S.concept)&&!S.design.rooms.some(r=>!r.open&&roomKind(r.n)&&!/bath|hall/.test(roomKind(r.n))))items=autoPlan(S.design.rooms.filter(r=>!r.open));
+ else if(S.design){frame();S.res=null;const a=furnG.rotation.y,src=RES.has(S.concept)&&S.design.rooms.length?S.design.items.concat(furnishDesign()):S.design.items;items=src.map(i=>{const p=toLocal(i.x,i.z),c=CAT[i.t];return{t:i.t,x:p.x,z:p.z,r:i.deg*Math.PI/180-a,o:c.def?{len:i.len||c.def.len}:undefined}})}else items=autoPlan();restore(items);autoOps();buildRoom();buildInterior();stats();inspect()}
 
 function stats(){const L=serial();let seats=0,units=0;for(const i of L){seats+=seatOf(i);if(TABLES.has(i.t))units++}const a=S.W*S.D;
  if(S.res){const rs=S.res.rooms,lv=rs.find(r=>/거실/.test(r.n)),bd=rs.filter(r=>/^(안방|침실)/.test(r.n)).length;$('#stSeats').textContent=bd||1;$('#stBigK').textContent=bd?'방 (안방 포함)':'원룸';$('#stArea').textContent=a.toFixed(1);$('#stPy').textContent=(a/3.3058).toFixed(1);$('#stUnits').textContent=rs.filter(r=>r.bath).length;$('#stUnitsK').textContent='욕실';$('#stPer').textContent=lv?((lv.x1-lv.x0)*(lv.z1-lv.z0)).toFixed(1):'–';$('#stPerK').textContent='거실 면적';$('#warn').hidden=true;return}
@@ -620,7 +635,7 @@ function parseAI(t){let s=String(t||'').replace(/```(?:json)?/gi,'');const a=s.i
  throw{code:'parse'}}
 async function shrink(f){const b=await createImageBitmap(f),k=Math.min(1,(f._big?1568:1200)/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);c.getContext('2d').drawImage(b,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',.86))}
 $('#aiBtn').onclick=async()=>{if(!sample&&!keyMode)return;if(keyMode&&!CFG.aiProxy&&!$('#apiKey').value.trim()){$('#aiStatus').textContent='먼저 Claude API 키를 넣어 주세요.';$('#apiKey').focus();return}const st=$('#aiStatus'),list=[],lab=[];
- if(S.plan){list.push(S.plan);lab.push('도면')}S.photos.slice(0,5).forEach((f,i)=>{list.push(f);lab.push('현장 사진 '+(i+1))});S.lease.slice(0,4).forEach((f,i)=>{list.push(f);lab.push('계약서 '+(i+1)+'쪽')});S.drafts.slice(0,2).forEach((f,i)=>{list.push(f);lab.push('인테리어 시안 '+(i+1))});const hasD=S.drafts.length>0;
+ if(S.plan){list.push(S.plan);lab.push('도면')}S.photos.slice(0,5).forEach((f,i)=>{list.push(f);lab.push('현장 사진 '+(i+1))});S.lease.slice(0,4).forEach((f,i)=>{list.push(f);lab.push('계약서 '+(i+1)+'쪽')});S.drafts.slice(0,2).forEach((f,i)=>{list.push(f);lab.push('인테리어 시안 '+(i+1))});const hasD=S.drafts.length>0,hasP=!!S.plan,hasL=hasD||hasP;
  if(!list.length){st.textContent='먼저 도면, 사진, 계약서, 시안 중 하나 이상을 올려주세요.';return}
  const btn=$('#aiBtn');btn.disabled=true;window._aiRaw='';aiT0=Date.now();aiChars=0;aiProgress();clearInterval(aiTimer);aiTimer=setInterval(aiProgress,1000);
  const cn=CONCEPTS[S.concept][0];
@@ -633,19 +648,25 @@ $('#aiBtn').onclick=async()=>{if(!sample&&!keyMode)return;if(keyMode&&!CFG.aiPro
 "lease":{"address":"","area_m2":숫자|null,"deposit":"","rent":"","use":"","term":""}|null,
 "observations":["현장 사진·도면에서 확인한 사실 3~5개, 각 한 문장(창, 배관, 전기, 바닥, 천장, 기둥 등)"],
 "advice":["${cn} 배치·공사 시 이 현장에서 특히 챙길 점 3~4개, 각 한 문장"],
-"confidence":"high|medium|low"${hasD?`,
+"confidence":"high|medium|low"${hasL?`,
 "layout":{"items":[{"type":"가구 종류","x_m":숫자,"z_m":숫자,"rot_deg":0|90|180|270,"len_m":숫자|null}],
- "rooms":[{"name":"남자 화장실","x0_m":숫자,"z0_m":숫자,"x1_m":숫자,"z1_m":숫자,"door":{"wall":"top|bottom|left|right","offset_m":숫자}|null}],
+ "rooms":[{"name":"안방","closed":true,"x0_m":숫자,"z0_m":숫자,"x1_m":숫자,"z1_m":숫자,"door":{"wall":"top|bottom|left|right","offset_m":숫자}|null}],
  "walls":[{"x0_m":숫자,"z0_m":숫자,"x1_m":숫자,"z1_m":숫자,"door_at_m":숫자|null}],
  "openings":[{"wall":"top|bottom|left|right","type":"window|door|glassdoor|folding|curtain|open","offset_m":숫자,"width_m":숫자,"label":"문 너머 공간 이름|null"}]}`:''}}
-${hasD?`인테리어 시안이 있으므로 layout을 꼭 채우세요. 시안·스케치에 그려지고 글씨로 적힌 것은 하나도 빠뜨리지 말고, 적힌 이름 그대로의 종류로, 그려진 위치와 크기 그대로 옮기세요. 임의로 가구를 더하거나 배치를 바꾸지 마세요. 시안이 비스듬한 3D 그림이면 바닥 평면으로 펴서 위치를 추정하고, 그림에 적힌 치수(예: 1286 x 828은 cm)를 width_m·depth_m에 쓰세요.
+${hasP?`도면이 있으므로 layout의 rooms·walls·openings를 도면 그대로 꼭 채우세요. 이것이 가장 중요합니다.
+- 먼저 치수선을 읽으세요. 바깥 전체 치수(가장 긴 치수선, 예: 10270)를 width_m·depth_m로 쓰고, 좌표 원점은 도면 바깥선의 왼쪽 위 모서리입니다. 위·아래·왼쪽·오른쪽의 칸별 치수(예: 3950, 3172.3, 2918.18)를 차례로 더해서 각 내벽의 x·z 위치를 계산하세요. 눈대중보다 치수 합산을 우선하세요. 치수가 mm면 1000으로 나누세요.
+- rooms: 도면에 이름이 적힌 공간을 하나도 빠짐없이(방1·방2·안방·거실·주방·화장실·현관·세탁실·드레스룸·발코니·수납공간 등) 적힌 이름 그대로. 벽으로 둘러싸인 방은 closed:true, 거실·주방처럼 벽 없이 트인 공간은 closed:false. 각 방의 문 위치를 door에(문 호 그림이 있는 벽).
+- walls: 굵은 검은 선으로 그려진 내벽 중 rooms 테두리로 표현되지 않는 것을 직선 하나씩.
+- openings: 바깥벽의 창(얇은 겹선 표시)과 문. 주 출입구(현관문)는 entrance에.
+- items: 도면에 그려진 가구·설비만(침대, 소파, 변기, 세면대, 욕조, 싱크대, 가스레인지, TV 등) 그려진 위치·방향 그대로. 그려지지 않은 가구는 넣지 마세요(빈 방은 리얼픽이 자동으로 채웁니다).
+`:''}${hasD?`인테리어 시안이 있으므로 layout을 꼭 채우세요. 시안·스케치에 그려지고 글씨로 적힌 것은 하나도 빠뜨리지 말고, 적힌 이름 그대로의 종류로, 그려진 위치와 크기 그대로 옮기세요. 임의로 가구를 더하거나 배치를 바꾸지 마세요. 시안이 비스듬한 3D 그림이면 바닥 평면으로 펴서 위치를 추정하고, 그림에 적힌 치수(예: 1286 x 828은 cm)를 width_m·depth_m에 쓰세요.
 - items: 시안의 가구를 하나씩. type은 다음 중 하나만: ${Object.entries(CAT).map(([k,c])=>k+'='+c.n+(c.w?'('+c.w+'×'+c.d+'m)':'(길이 len_m, 깊이 '+c.d+'m)')).join(', ')}. x_m,z_m은 가구 중심. 길이가 있는 가구는 그림에 그려진 길이를 len_m에. 주방 기구는 각각 따로: 가스렌지·화구=range, 작업대=worktable, 싱크대=ksink, 냉장고=fridge, 식기세척기=dishwasher, 숙성·음료·보온 냉장고처럼 유리문 냉장고=showcase, 선반=shelf, 튀김기=fryer, 제빙기=icemaker, 손 세정대=handsink, 커피머신=espresso. kitchen(통합 주방 라인)은 쓰지 마세요. 화장실 변기 칸은 toiletbooth, 칸막이·유리벽은 glasspart.
 - rot_deg: 가구 앞면(사람이 앉거나 서는 쪽)이 향하는 방향. 0=아래(+z), 90=오른쪽, 180=위, 270=왼쪽. 테이블은 0/180이면 긴 변이 가로, 90/270이면 긴 변이 세로. 벽에 붙는 가구는 등이 벽에 닿게.
 - rooms: 매장 안에 있는, 사방이 벽으로 막힌 방(화장실·창고 등). 매장 바깥에 있는 공간은 rooms에 넣지 마세요. door.offset_m은 그 방 해당 벽의 왼쪽(또는 위쪽) 끝에서 문 중심까지.
 - walls: rooms로 표현되지 않는 매장 안의 벽·칸막이 선(주방 경계 벽, ㄱ자 칸막이 등)을 직선 하나씩. 가로선이면 z0_m=z1_m, 세로선이면 x0_m=x1_m. 벽 중간에 문이 있으면 door_at_m에 시작점(x0,z0)부터 문 중심까지 거리.
 - openings: 바깥벽의 창문·문·폴딩도어·통유리. 문 너머에 창고·화장실처럼 매장 밖 공간이 적혀 있으면 label에 그 이름. 주 출입구는 entrance에만 쓰고 여기서 빼세요. offset_m은 entrance와 같은 기준으로 중심까지.
 `:''}${RES.has(S.concept)?"주거 공간이므로 observations에 방·욕실 개수, 발코니, 창 방향 등 평면 구성을 꼭 적고, 계약서가 매매계약서여도 lease에 면적·주소·용도를 같은 형식으로 넣으세요(가격은 deposit 자리에). ":""}규칙: JSON 안에 주석(//)이나 설명을 넣지 마세요. entrance.offset_m은 top/bottom 벽이면 왼쪽 끝부터, left/right 벽이면 위쪽 끝부터 입구 중심까지 거리입니다. 손그림이나 옆으로 돌아간 도면이면 글자가 바로 읽히는 방향으로 돌려 놓고 그 위쪽을 top으로 삼으세요. 치수가 cm 단위면 m로 바꾸세요. 도면 치수 표기를 최우선으로 쓰고, 없으면 계약서 전용면적과 사진 비율로 가로·세로를 추정해 observations에 "추정"이라고 밝히세요. 모르는 값은 null. 계약서의 임대인·임차인 이름, 주민등록번호, 연락처, 계좌는 절대 출력하지 마세요.`;
- try{if(S.plan)S.plan._big=1;S.drafts.forEach(f=>f._big=1);const imgs=await Promise.all(list.map(shrink));const keep=imgs.map((b,i)=>({b,l:lab[i]})).filter(x=>x.l==='도면'||/^인테리어 시안/.test(x.l));$('#aiRaw').hidden=true;const txt=await askAI(prompt,imgs);window._aiRaw=txt;const data=parseAI(txt);try{apply(data)}catch(err){throw{code:'apply',message:err&&err.message}}saveProject(data,keep);st.textContent=S.design?`시안을 읽어 가구 ${S.design.items.length}개, 방 ${S.design.rooms.length}개를 배치했습니다. 위치가 다르면 끌어서 고쳐 주세요.`:'분석을 반영해 배치했습니다. 치수가 다르면 아래에서 고쳐 주세요.'}
+ try{if(S.plan)S.plan._big=1;S.drafts.forEach(f=>f._big=1);const imgs=await Promise.all(list.map(shrink));const keep=imgs.map((b,i)=>({b,l:lab[i]})).filter(x=>x.l==='도면'||/^인테리어 시안/.test(x.l));$('#aiRaw').hidden=true;const txt=await askAI(prompt,imgs);window._aiRaw=txt;const data=parseAI(txt);try{apply(data)}catch(err){throw{code:'apply',message:err&&err.message}}saveProject(data,keep);st.textContent=S.design?`${S.drafts.length?'시안':'도면'}을 읽어 방 ${S.design.rooms.length}개, 가구 ${S.design.items.length}개를 옮겼고, 빈 방은 자동으로 채웠어요. 위치가 다르면 끌어서 고쳐 주세요.`:'분석을 반영해 배치했습니다. 치수가 다르면 아래에서 고쳐 주세요.'}
  catch(e){clearInterval(aiTimer);if(e&&(e.code==='parse'||e.code==='apply'||e.code==='empty')){let d='';try{d=JSON.stringify(window._aiDiag||{})}catch(x){}$('#aiRawText').textContent='[진단] '+d+'\n\n'+String(window._aiRaw||'(빈 답)').slice(0,6000);$('#aiRaw').hidden=false}st.textContent=e&&e.code==='login'?'로그인이 필요해요. 리얼픽에 로그인한 뒤 다시 눌러 주세요.':e&&e.code==='empty'?'AI가 빈 답을 보냈어요. 아래 "AI 답 원문 보기"를 캡처해서 보내주시면 원인을 찾을 수 있어요.':e&&e.code==='parse'?'AI 답의 형식이 깨져서 반영하지 못했어요. 한 번 더 눌러 보세요. 계속 안 되면 모델을 Opus로 바꿔 보세요.':e&&e.code==='apply'?'분석 결과를 화면에 반영하다 오류가 났어요'+(e.message?': '+String(e.message).slice(0,120):'.'):e&&e.code==='timeout'?'4분이 지나도 답이 없어 멈췄어요. 이미지 수를 줄이거나 잠시 뒤 다시 시도해 주세요.':e&&e.code==='badkey'?'API 키가 올바르지 않거나 권한이 없어요. 키를 다시 확인해 주세요.':e&&e.code==='network'?(CFG.aiProxy?'AI 서버에 연결하지 못했어요. 인터넷 연결을 확인하고 잠시 뒤 다시 시도해 주세요.':'Anthropic API에 연결하지 못했어요. 인터넷 연결이나 회사 방화벽을 확인해 주세요.'):e&&e.code==='api'?'AI 요청이 거절됐어요'+(e.message?': '+String(e.message).slice(0,160):'.'):e&&e.code==='not_granted'?'AI 사용이 허용되지 않았어요. 치수를 직접 입력해 주세요.':e&&e.code==='rate_limited'?'요청이 많아 잠시 뒤에 다시 시도해 주세요.':'자료를 읽지 못했어요. 더 선명한 이미지로 다시 시도하거나 치수를 직접 입력해 주세요.'}
  clearInterval(aiTimer);btn.disabled=false};
 function apply(j){if(num(j.width_m))S.W=snap(clamp(j.width_m,3,60));if(num(j.depth_m))S.D=snap(clamp(j.depth_m,3,60));
@@ -660,7 +681,7 @@ function apply(j){if(num(j.width_m))S.W=snap(clamp(j.width_m,3,60));if(num(j.dep
  const sn=v=>Math.round(v*20)/20,Ly=j.layout;S.design=null;S.dWalls=[];
  if(Ly&&((Array.isArray(Ly.items)&&Ly.items.length)||(Array.isArray(Ly.rooms)&&Ly.rooms.length)||(Array.isArray(Ly.walls)&&Ly.walls.length))){
   S.design={items:(Array.isArray(Ly.items)?Ly.items:[]).filter(i=>i&&CAT[i.type]&&isFinite(i.x_m)&&isFinite(i.z_m)).slice(0,150).map(i=>({t:i.type,x:clamp(+i.x_m,0,S.W),z:clamp(+i.z_m,0,S.D),deg:+i.rot_deg||0,len:num(+i.len_m)?clamp(+i.len_m,.6,20):null})),
-   rooms:(Array.isArray(Ly.rooms)?Ly.rooms:[]).filter(r=>r&&[r.x0_m,r.z0_m,r.x1_m,r.z1_m].every(v=>isFinite(v))).slice(0,12).map(r=>({n:String(r.name||'방').slice(0,14),x0:sn(clamp(Math.min(r.x0_m,r.x1_m),0,S.W)),x1:sn(clamp(Math.max(r.x0_m,r.x1_m),0,S.W)),z0:sn(clamp(Math.min(r.z0_m,r.z1_m),0,S.D)),z1:sn(clamp(Math.max(r.z0_m,r.z1_m),0,S.D)),door:r.door&&['top','bottom','left','right'].includes(r.door.wall)?{wall:r.door.wall,off:+r.door.offset_m||.6}:null})).filter(r=>r.x1-r.x0>.5&&r.z1-r.z0>.5)};
+   rooms:(Array.isArray(Ly.rooms)?Ly.rooms:[]).filter(r=>r&&[r.x0_m,r.z0_m,r.x1_m,r.z1_m].every(v=>isFinite(v))).slice(0,20).map(r=>({n:String(r.name||'방').slice(0,14),open:r.closed===false||/거실|발코니|베란다|복도/.test(String(r.name||'')),x0:sn(clamp(Math.min(r.x0_m,r.x1_m),0,S.W)),x1:sn(clamp(Math.max(r.x0_m,r.x1_m),0,S.W)),z0:sn(clamp(Math.min(r.z0_m,r.z1_m),0,S.D)),z1:sn(clamp(Math.max(r.z0_m,r.z1_m),0,S.D)),door:r.door&&['top','bottom','left','right'].includes(r.door.wall)?{wall:r.door.wall,off:+r.door.offset_m||.6}:null})).filter(r=>r.x1-r.x0>.5&&r.z1-r.z0>.5)};
   S.dWalls=designWalls(S.design.rooms);
   for(const w of(Array.isArray(Ly.walls)?Ly.walls:[]).slice(0,40)){if(!w||![w.x0_m,w.z0_m,w.x1_m,w.z1_m].every(v=>isFinite(v)))continue;const x0=sn(clamp(+w.x0_m,0,S.W)),x1=sn(clamp(+w.x1_m,0,S.W)),z0=sn(clamp(+w.z0_m,0,S.D)),z1=sn(clamp(+w.z1_m,0,S.D)),h=Math.abs(x1-x0)>=Math.abs(z1-z0),a=h?Math.min(x0,x1):Math.min(z0,z1),b=h?Math.max(x0,x1):Math.max(z0,z1);if(b-a<.3)continue;
    const st=h?(x0<=x1?x0:x1):(z0<=z1?z0:z1),ops=isFinite(w.door_at_m)&&w.door_at_m!==null&&b-a>1?[{t:'door',w:.9,s:clamp(st+(+w.door_at_m),a+.45,b-.45)}]:[];
