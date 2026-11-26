@@ -228,6 +228,13 @@ html.app-ui .block{margin-top:14px}
 html.app-ui .sec-head .eyebrow{display:none}
 html.app-ui .drawer{top:calc(56px + env(safe-area-inset-top,0px))!important;bottom:calc(70px + env(safe-area-inset-bottom,0px))!important;left:0!important;right:0!important;width:auto!important;height:auto!important;border-radius:0!important;border:0!important;box-shadow:none!important;z-index:45}
 html.app-ui .view a.back{display:none}
+@media (min-width:600px){html.app-ui body{max-width:480px;margin:0 auto;box-shadow:0 0 0 1px var(--line),0 0 40px rgb(15 27 61/.08)}html.app-ui .apptop{max-width:460px;margin:0 auto}html.app-ui .apptab,html.app-ui .drawer{max-width:480px;margin:0 auto}html.app-ui{background:#e6e9f2}html.app-ui[data-theme="dark"]{background:#05070d}}
+.sfbox .sf-t{display:flex;align-items:center;gap:8px;margin-bottom:6px}.sfbox .sf-ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#eef0ff;color:#5b5bf0}.sfbox .sf-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.sfbox .note{font-size:13px;margin:0 0 12px}
+.ana-out .sfbox{margin-top:14px}
+.spacewrap{padding:18px 0 8px}.space-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.space-head h1{margin:0;font-size:24px;font-weight:900;letter-spacing:-.02em}.space-head p{margin:4px 0 0;color:var(--muted);font-size:14px}.space-head .beta{font-size:12px;vertical-align:middle;background:var(--accent-soft);color:var(--accent);border-radius:99px;padding:3px 8px;margin-left:4px}
+.spaceframe{display:block;width:100%;height:calc(100dvh - 170px);min-height:620px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+html.app-ui .spacewrap{padding:0;margin:0 -14px}html.app-ui .space-head{display:none}html.app-ui .spaceframe{border:0;border-radius:0;height:calc(100dvh - 130px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:0}
 /* 앱 홈 */
 .ahome{display:grid;gap:14px;padding:14px 0 8px}
 .ah-hello p{margin:0;color:var(--muted);font-size:14px;font-weight:600}.ah-hello h1{margin:2px 0 0;font-size:24px;font-weight:900;letter-spacing:-.03em}.ah-hello b{color:var(--accent)}
@@ -238,7 +245,7 @@ html.app-ui .view a.back{display:none}
 .aq{display:grid;justify-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--fg)}
 .aq-ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--qc) 12%,var(--surface));color:var(--qc)}
 .aq-ic svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.ah-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ah-stats>div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 10px;display:grid;gap:1px}
+.ah-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ah-stats>div,.ah-stats>a{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 10px;display:grid;gap:1px}
 .ah-stats span{font-size:11.5px;color:var(--muted);font-weight:700}.ah-stats b{font-size:18px;font-weight:900;letter-spacing:-.02em}.ah-stats small{font-size:10.5px;color:var(--faint)}
 .ah-head{display:flex;align-items:baseline;justify-content:space-between;margin-top:6px}.ah-head h2{margin:0;font-size:18px;font-weight:900;letter-spacing:-.02em}.ah-head a{font-size:13px;color:var(--muted);font-weight:700}
 .ah-scroll{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -14px;padding:2px 14px 6px;scrollbar-width:none}.ah-scroll::-webkit-scrollbar{display:none}
@@ -804,7 +811,7 @@ footer{background:var(--sunk);border-top:0}
 .qround a:hover{color:var(--fg)}
 .qround svg{width:32px;height:32px;stroke:var(--qc);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .q1{--qb:#eef3ff;--qc:#3366ff}.q2{--qb:#fff1ea;--qc:#ff6b3d}.q3{--qb:#f2edff;--qc:#7b5cff}.q4{--qb:#fff6e0;--qc:#e59a00}
-.q5{--qb:#ffeef1;--qc:#f0446a}.q6{--qb:#e9f8f1;--qc:#12a26a}.q7{--qb:#e8f6fb;--qc:#1a91c2}.q8{--qb:#f3f4f8;--qc:#4b5468}
+.q5{--qb:#ffeef1;--qc:#f0446a}.q6{--qb:#e9f8f1;--qc:#12a26a}.q7{--qb:#e8f6fb;--qc:#1a91c2}.q8{--qb:#f3f4f8;--qc:#4b5468}.q9{--qb:#eef0ff;--qc:#5b5bf0}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .qround .ic{background:color-mix(in srgb,var(--qc) 16%,var(--surface))}}
 @media (max-width:520px){.qround a{width:76px;font-size:12.5px}.qround .ic{width:60px;height:60px;border-radius:20px}.qround svg{width:26px;height:26px}}
 
@@ -1034,6 +1041,7 @@ async function loadFeed(){
 
 /* ---------- 공통 조각 ---------- */
 const ICON = {
+  cube:'<path d="M12 3 3.5 7.5v9L12 21l8.5-4.5v-9z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/>',
   search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   back:'<path d="M15 5l-7 7 7 7"/>',
   chev:'<path d="M9 5l7 7-7 7"/>',
@@ -1155,6 +1163,7 @@ function viewHome(){
       <a href="#community" class="q6"><span class="ic">${svg('users')}</span>커뮤니티</a>
       <a href="#rates" class="q7"><span class="ic">${svg('trend')}</span>금리 동향</a>
       <a href="#support" class="q8"><span class="ic">${svg('coin')}</span>정부지원금</a>
+      <a href="#space" class="q9"><span class="ic">${svg('cube')}</span>스토어핏</a>
     </nav></section>
 
   ${MARKET.items.length?`<section class="block">${secHead('중개사 등록 매물','새로 올라온 매물','#listings','전체 매물 보기')}
@@ -2834,7 +2843,8 @@ function anaOutHtml(it){
   ${c?`<p class="note">${esc(c.basis)} · ㎡당 중간값 ${M(c.perM2)} × ${c.area}㎡ = 추정 시세 ${M(c.est)}${c.apslVsEst!=null?` · 감정가는 시세보다 ${pctTxt(c.apslVsEst)}`:''}</p>
    <div class="mk-tbl ana-tbl"><div class="mk-tr mk-th"><span>거래일</span><span>위치·이름</span><span>면적</span><span>거래가</span></div>${c.samples.map(d=>`<div class="mk-tr"><span class="note">${esc(d.date)}</span><span>${esc(d.dong)}${d.tag?' · '+esc(d.tag):''}</span><span class="num">${d.area}㎡</span><span class="num"><b>${M(d.amount)}</b></span></div>`).join('')}</div>`
    :`<p class="note">${esc(it.compare?.skip||'실거래 비교 결과가 없어요')}</p>`}
-  <p class="note" style="margin-top:8px">출처: 국토교통부 실거래가 공개 자료 (지분·해제 거래 제외)</p></div></div>`;
+  <p class="note" style="margin-top:8px">출처: 국토교통부 실거래가 공개 자료 (지분·해제 거래 제외)</p></div>
+  ${storefitBox(it,{external:ANA.embed})}</div>`;
 }
 document.addEventListener('input',e=>{
   const fm=e.target.closest('#anaForm');if(!fm)return;
@@ -3020,6 +3030,7 @@ function viewAuction(id){
     <div id="aucExtra">${aucExtraHtml(it)}</div>
   </div>
   <aside class="side"><div class="panel"><div style="font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">입찰은 온비드에서 ${heartBtn('auction',it.id,it.title)}</div><p class="note" style="font-size:13px;margin:0 0 12px">감정평가서, 공매재산명세서, 입찰 참가는 온비드 원문에서 확인하세요.</p><a class="btn primary" style="width:100%;justify-content:center" href="${esc(onbidUrl(it))}" target="_blank" rel="noopener">온비드 원문 보기</a></div>
+    ${storefitBox(it)}
     <div class="panel note" style="font-size:13px">자료: 한국자산관리공사 온비드, 국토교통부 실거래가${AUC.updatedAt&&fmtTime(AUC.updatedAt)?'<br>'+fmtTime(AUC.updatedAt)+' 갱신':''}</div></aside></div>`;
 }
 document.addEventListener('click',e=>{
@@ -3227,6 +3238,33 @@ function viewAds(){
   <p class="note" style="margin-top:14px">광고 문의: ${esc(COMPANY.email)} · ${esc(COMPANY.name)}</p>
   </section>`;
 }
+/* 스토어핏 연결: 물건 정보(면적·용도)로 예상 배치를 바로 열기. 경매·공매·분석기 공통 */
+function storefitPlan(it){
+  const a=+(it.bldArea||it.area||0), u=String(it.usage||''), c=it.cat||'';
+  if(!(a>=10&&a<=800)||c==='land'||c==='indu'||/공장|창고|토지|숙박|위험물|분뇨|묘지/.test(u)) return null;
+  let concept,kind;
+  if(/단독|다가구/.test(u)||(!u&&c==='sh')){concept='house';kind='단독주택'}
+  else if(/아파트|다세대|연립|도시형|오피스텔|주거/.test(u)||['apt','rh','offi','sh'].includes(c)){concept='apt';kind=/오피스텔/.test(u)||c==='offi'?'오피스텔':/다세대|연립/.test(u)||c==='rh'?'빌라':'아파트'}
+  else if(/업무시설|사무/.test(u)){concept='office';kind='사무실'}
+  else {concept='cafe';kind='상가'}
+  const q=new URLSearchParams({area:String(Math.round(a*10)/10),c:concept,k:kind,t:String(it.title||'').slice(0,80),from:String(it.id||'')});
+  return {href:'#space?'+q.toString(),area:a,concept,kind};
+}
+function storefitBox(it,opt={}){
+  const p=storefitPlan(it); if(!p) return '';
+  const res=p.concept==='apt'||p.concept==='house';
+  const href=opt.external?new URL(p.href,location.href.split('#')[0]).href:p.href;
+  return `<div class="panel sfbox"><div class="sf-t"><span class="sf-ic">${svg('cube')}</span><b>스토어핏으로 인테리어 해보기</b></div>
+  <p class="note">이 물건 면적(${(Math.round(p.area*10)/10).toLocaleString()}㎡)으로 ${res?esc(p.kind)+' 방·가구':'매장 가구'} 예상 배치를 3D로 바로 만들어 드려요.${res?'':' 업종은 들어가서 바꿀 수 있어요.'}</p>
+  <a class="btn primary" style="width:100%;justify-content:center" href="${esc(href)}"${opt.external?' target="_blank" rel="noopener"':''}>3D 배치 해보기</a></div>`;
+}
+function viewSpace(){
+  const q=new URLSearchParams(route().split('?')[1]||''), from=q.get('from')||'';
+  const keep=new URLSearchParams();['area','c','k','t'].forEach(k=>{if(q.get(k))keep.set(k,q.get(k))});
+  const qs=keep.toString(), back=from.startsWith('ana-')?'#analyze':/^[\w-]+$/.test(from)?'#auc-'+from:'';
+  return `<section class="spacewrap"><div class="space-head"><div>${back?`<a class="back" href="${esc(back)}">← 물건으로 돌아가기</a>`:''}<h1>스토어핏 <span class="beta">테스트</span></h1><p>${qs?esc(q.get('t')||'선택한 물건')+' 정보로 예상 배치를 만들었어요. 가구를 옮기고 업종·치수를 바꿔 보세요.':'도면·현장 사진·계약서·인테리어 시안을 올리고 업종을 고르면 가구를 배치해 3D로 보여줘요. 결과는 참고용 초안이에요.'}</p></div><a class="btn" href="space/${qs?'?'+esc(qs):''}" target="_blank" rel="noopener">새 창으로 크게 보기</a></div>
+  <iframe class="spaceframe" src="space/?embed=1${qs?'&amp;'+esc(qs):''}" title="리얼픽 스토어핏" allow="fullscreen"></iframe></section>`;
+}
 function viewTerms(){return legalPage('이용약관',`
   <h2>제1조 목적</h2><p>이 약관은 ${esc(OPERATOR())}(이하 "운영자")가 제공하는 리얼픽 서비스(공매 물건 정보와 주변 시세 비교, 분양·임대 공고, 실거래 동향, 매물 정보, 정부지원사업 공고, 금리 정보, AI 상담, 커뮤니티 등)의 이용 조건과 절차, 회원과 운영자의 권리·의무를 정합니다.</p>
   <h2>제2조 회원가입</h2><p>회원가입은 만 14세 이상인 사람이 이 약관과 개인정보 수집·이용에 동의하고 이메일 인증을 마치면 이루어집니다. 다른 사람의 정보를 쓰거나 사실과 다른 정보를 입력하면 이용을 제한할 수 있습니다.</p>
@@ -3246,16 +3284,18 @@ function viewPrivacy(){return legalPage('개인정보처리방침',`
     <tr><td>서비스 이용 (선택)</td><td>관심 지역, 관심 목록</td><td>맞춤 정보 제공</td></tr>
     <tr><td>커뮤니티 이용</td><td>작성한 글·댓글·사진, 추천·신고 기록</td><td>게시판 운영, 부정 게시물 관리</td></tr>
     <tr><td>AI 상담 이용</td><td>질문 내용 (리얼픽 서버에는 저장하지 않음), 일일 이용 횟수</td><td>AI 답변 생성, 이용 한도 관리</td></tr>
+    <tr><td>스토어핏(공간 3D 배치) AI 분석</td><td>올린 도면·현장 사진·계약서·인테리어 시안 이미지 (분석에만 쓰고 저장하지 않음), 이용 기록(일시·이미지 수)</td><td>AI 분석, 이용 관리</td></tr>
+    <tr><td>서비스 개선·AI 학습 활용 (선택 동의)</td><td>스토어핏에 올린 도면·인테리어 시안 이미지, AI 분석 결과(면적·용도 등. 계약서의 이름·주소·연락처·보증금·월세는 제외), 직접 고친 최종 배치</td><td>배치 정확도 개선, 리얼픽 배치 AI 학습용 자료</td></tr>
     <tr><td>마케팅 (선택)</td><td>이메일, 수신 동의 일시</td><td>새 공매·급매 소식 안내</td></tr>
     <tr><td>중개사 회원 (필수)</td><td>중개사무소 명칭·등록번호·소재지·연락처, 개업공인중개사 성명, 등록증 사본</td><td>자격 확인, 매물 광고에 법정 표시사항 게재</td></tr>
     <tr><td>자동 수집</td><td>접속 기록, 브라우저 정보</td><td>보안, 부정 이용 방지</td></tr>
   </tbody></table></div>
   <p>만 14세 미만 아동의 회원가입은 받지 않습니다.</p>
-  <h2>2. 보유 기간과 파기</h2><p>회원 탈퇴 시 바로 지웁니다. 작성한 글·댓글·사진도 함께 지워집니다. 다만 관계 법령에 따라 보관해야 하는 정보(유료 서비스 도입 후의 계약·결제 기록 5년, 소비자 불만·분쟁 처리 기록 3년, 접속 기록 3개월 등)는 그 기간 동안 따로 보관합니다. 전자 파일은 되살릴 수 없는 방법으로 지웁니다.</p>
+  <h2>2. 보유 기간과 파기</h2><p>회원 탈퇴 시 바로 지웁니다. 작성한 글·댓글·사진도 함께 지워집니다. 다만 관계 법령에 따라 보관해야 하는 정보(유료 서비스 도입 후의 계약·결제 기록 5년, 소비자 불만·분쟁 처리 기록 3년, 접속 기록 3개월 등)는 그 기간 동안 따로 보관합니다. 전자 파일은 되살릴 수 없는 방법으로 지웁니다. 서비스 개선·AI 학습 활용에 동의해 저장된 스토어핏 배치 자료는 동의를 철회하거나 탈퇴할 때까지 보관하며, 철회는 스토어핏 화면에서 동의를 끄고 문의 메일로 삭제를 요청하면 됩니다. 동의하지 않아도 모든 기능을 쓸 수 있습니다.</p>
   <h2>3. 처리 위탁과 국외 이전</h2><p>서비스 운영을 위해 아래 업체에 개인정보 처리를 맡기고 있으며, 일부는 국외에 있는 업체입니다. 정보는 서비스 이용 시 네트워크를 통해 전송됩니다.</p>
   <div class="tablewrap"><table class="mtable" style="min-width:560px"><thead><tr><th>받는 곳 (국가)</th><th>맡기는 일</th><th>전송 항목</th><th>보유 기간</th></tr></thead><tbody>
     <tr><td>Supabase Inc. (미국, 데이터는 서울 리전 저장)</td><td>회원 정보 저장, 로그인 처리, 게시물·사진 저장</td><td>회원가입·이용 정보 전체</td><td>회원 탈퇴 또는 위탁 계약 종료 시까지</td></tr>
-    <tr><td>Anthropic, PBC (미국)</td><td>AI 상담 답변 생성</td><td>AI 상담 질문 내용 (이메일·닉네임 등 회원 정보는 보내지 않음)</td><td>업체 정책에 따라 일정 기간 후 삭제</td></tr>
+    <tr><td>Anthropic, PBC (미국)</td><td>AI 상담 답변 생성, 스토어핏 배치 분석</td><td>AI 상담 질문 내용, 스토어핏에 올린 이미지 (이메일·닉네임 등 회원 정보는 보내지 않음)</td><td>업체 정책에 따라 일정 기간 후 삭제</td></tr>
     <tr><td>GitHub, Inc. (미국)</td><td>사이트 화면 제공 (GitHub Pages)</td><td>접속 기록 (회원 정보는 저장하지 않음)</td><td>업체 정책에 따름</td></tr>
     <tr><td>㈜카카오 (대한민국)</td><td>지도 표시, 주소 검색</td><td>지도를 볼 때의 접속 정보 (회원 정보는 보내지 않음)</td><td>업체 정책에 따름</td></tr>
   </tbody></table></div>
@@ -3269,7 +3309,7 @@ function viewPrivacy(){return legalPage('개인정보처리방침',`
   <h2>10. 방침 변경</h2><p>이 방침을 바꿀 때는 시행 7일 전부터 서비스 화면에 알립니다.</p>`)}
 function footerInfo(){
   const c=COMPANY, parts=[['상호',c.name],['대표',c.ceo],['사업자등록번호',c.bizNo],['통신판매업 신고',c.mailOrderNo],['주소',c.address],['이메일',c.email],['전화',c.phone]].filter(([,v])=>v);
-  return `<nav><a href="#analyze">경매 물건 분석기</a><a href="#market">공매 시장 리포트</a><a href="#calc">수익률 계산기</a><a href="#terms">이용약관</a><a href="#privacy"><b>개인정보처리방침</b></a><a href="#insight">전문가 인사이트</a><a href="#support">정부지원금</a><a href="#auctions">경매·공매</a></nav>
+  return `<nav><a href="#space">스토어핏 (3D 배치)</a><a href="#analyze">경매 물건 분석기</a><a href="#market">공매 시장 리포트</a><a href="#calc">수익률 계산기</a><a href="#terms">이용약관</a><a href="#privacy"><b>개인정보처리방침</b></a><a href="#insight">전문가 인사이트</a><a href="#support">정부지원금</a><a href="#auctions">경매·공매</a></nav>
     ${parts.length?`<div class="bizinfo">${parts.map(([k,v])=>`<span>${k} ${esc(v)}</span>`).join('')}</div>`:''}
     <div>리얼픽은 매물 검색, 경매·공매와 실거래가 비교, 지원사업 공고, 금리 정보를 한곳에서 제공합니다. 매물은 등록 심사를 거친 개업공인중개사가 올리며, 정책 해설은 정책브리핑(공공누리 제1유형) 자료를 AI가 요약한 참고용입니다. 공매·실거래·공고 정보는 공공기관 공개 자료이고, 시세 추정과 AI 답변은 참고용입니다.</div>`;
 }
@@ -3906,7 +3946,7 @@ document.addEventListener('click',e=>{
 /* ---------- 라우터 ---------- */
 /* ================= 앱 전용 화면 (홈 화면에 설치해서 열었을 때) ================= */
 const APP_UI=document.documentElement.classList.contains('app-ui');
-const APP_TITLES=[['auctions','공매'],['listings','지도'],['market','시장 리포트'],['calc','수익률 계산기'],['analyze','경매 분석기'],['community','커뮤니티'],['insight','인사이트'],['support','정부지원금'],['rates','금리'],['my','마이'],['login','로그인'],['signup','회원가입'],['join','가입 마무리'],['terms','이용약관'],['privacy','개인정보처리방침'],['agent','중개사 센터'],['admin','관리자'],['listing-new','매물 등록'],['write','글쓰기'],['auc-','공매 상세'],['l-','매물 상세'],['h-','분양·임대'],['post-','게시글'],['ins-','인사이트'],['notice-','지원사업 공고'],['edit-','매물 수정']];
+const APP_TITLES=[['auctions','공매'],['listings','지도'],['market','시장 리포트'],['calc','수익률 계산기'],['analyze','경매 분석기'],['space','스토어핏'],['community','커뮤니티'],['insight','인사이트'],['support','정부지원금'],['rates','금리'],['my','마이'],['login','로그인'],['signup','회원가입'],['join','가입 마무리'],['terms','이용약관'],['privacy','개인정보처리방침'],['agent','중개사 센터'],['admin','관리자'],['listing-new','매물 등록'],['write','글쓰기'],['auc-','공매 상세'],['l-','매물 상세'],['h-','분양·임대'],['post-','게시글'],['ins-','인사이트'],['notice-','지원사업 공고'],['edit-','매물 수정']];
 function appTitle(r){const t=APP_TITLES.find(([k])=>k.endsWith('-')?r.startsWith(k):r===k||r.startsWith(k+'?'));return t?t[1]:''}
 function paintAppTop(r){
   const el=document.getElementById('apptop');if(!el)return;
@@ -3937,8 +3977,8 @@ function viewAppHome(){
     <div class="ah-hello"><p>${nick?esc(nick)+'님, ':''}오늘의 공매</p><h1>진행 중 <b>${live.length.toLocaleString()}</b>건${today?` · 새로 <b>${today}</b>건`:''}</h1></div>
     <form class="ah-search" id="appSearch"><span>${svg('ai')}</span><input name="q" placeholder="예: 대구 수성구 3억 이하 아파트 공매" autocomplete="off" enterkeyhint="search"><button type="submit">찾기</button></form>
     <div class="ah-quick">${q('#listings','map','지도','#3366ff')}${q('#auctions','gavel','공매','#f26b38')}${q('#market','trend','시장 리포트','#16a34a')}${q('#calc','coin','계산기','#d97706')}
-      ${q('#ai','ai','AI 상담','#7c5cff')}${q('#community','chat','커뮤니티','#0ea5e9')}${q('#support','book','지원사업','#db2777')}${q('#rates','down','금리','#475569')}</div>
-    <div class="ah-stats"><div><span>평균 낙찰가율</span><b>${mk!=null?mk.toFixed(1)+'%':'-'}</b><small>최근 3개월</small></div><div><span>3일 내 마감</span><b>${soon.length.toLocaleString()}건</b><small>입찰 마감 기준</small></div><div><span>기준금리</span><b>${rate!=null?rate+'%':'-'}</b><small>한국은행</small></div></div>
+      ${q('#ai','ai','AI 상담','#7c5cff')}${q('#community','chat','커뮤니티','#0ea5e9')}${q('#support','book','지원사업','#db2777')}${q('#space','cube','스토어핏','#5b5bf0')}</div>
+    <div class="ah-stats"><div><span>평균 낙찰가율</span><b>${mk!=null?mk.toFixed(1)+'%':'-'}</b><small>최근 3개월</small></div><div><span>3일 내 마감</span><b>${soon.length.toLocaleString()}건</b><small>입찰 마감 기준</small></div><a href="#rates"><span>기준금리</span><b>${rate!=null?rate+'%':'-'}</b><small>한국은행 · 금리 보기</small></a></div>
     ${cheap.length?`<div class="ah-head"><h2>시세보다 싸게 나온 공매</h2><a href="#auctions">전체</a></div><div class="ah-scroll">${cheap.map(aucCard).join('')}</div>`:''}
     ${soon.length?`<div class="ah-head"><h2>마감 임박</h2><a href="#auctions">전체</a></div><div class="ah-list">${uniq(soon,5).map(i=>{const [dl]=aucDday(i);return `<a href="#auc-${esc(i.id)}"><span class="ah-dd">${esc(dl)}</span><span class="ah-tt"><b>${esc(i.title)}</b><small>${esc(i.sgg||i.sido||'')} · 최저가 ${wonKRW(i.minp)}${i.ratio?` · 감정가의 ${Math.round(i.ratio)}%`:''}</small></span>${svg('chev')}</a>`}).join('')}</div>`:''}
     ${ins.length?`<div class="ah-head"><h2>이번 주 부동산 정책</h2><a href="#insight">전체</a></div><div class="ah-list">${ins.map(n=>`<a href="#ins-${esc(n.id)}"><span class="ah-dd pol">${esc((n.ministry||'정책').replace('국토교통부','국토부').slice(0,4))}</span><span class="ah-tt"><b>${esc(n.title)}</b><small>${esc((n.date||'').slice(0,10).replace(/-/g,'.'))}</small></span>${svg('chev')}</a>`).join('')}</div>`:''}
@@ -3985,6 +4025,7 @@ function render(){
   else if(r==='calc'){html=viewCalc();nav='auctions';AFTER.push(calcHints)}
   else if(r==='market'){html=viewMarket();nav='auctions'}
   else if(r==='analyze'||r.startsWith('analyze?')){html=viewAnalyze();nav='auctions'}
+  else if(r==='space'||r.startsWith('space?')){html=viewSpace();nav=''}
   else if(r==='support'){html=viewSupport();nav='insight'}
   else if(r.startsWith('notice-')){html=viewNotice(r.slice(7));nav='insight'}
   else {html=APP_UI?viewAppHome():viewHome();nav='home'}
@@ -4073,14 +4114,14 @@ function openChat(prefill){if(DOCK_MQ.matches&&!document.body.classList.contains
 const DOCK_MQ=matchMedia('(min-width:1360px)');
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}}, lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 function applyDock(){
-  const on=DOCK_MQ.matches&&lsGet('rp-dock')!=='0';
+  const on=!APP_UI&&DOCK_MQ.matches&&lsGet('rp-dock')!=='0';
   document.body.classList.toggle('dock',on);
   $('#closeChat').setAttribute('aria-label',on?'상담창 접기':'닫기');
   if(on) refreshQuota();
 }
 applyDock(); DOCK_MQ.addEventListener?.('change',applyDock);
 $('#fab').onclick=()=>{
-  if(DOCK_MQ.matches){lsSet('rp-dock','1');applyDock();$('#drawer').hidden=false;$('#chatIn').focus();return}
+  if(DOCK_MQ.matches&&!APP_UI){lsSet('rp-dock','1');applyDock();$('#drawer').hidden=false;$('#chatIn').focus();return}
   const d=$('#drawer');d.hidden=!d.hidden;if(!d.hidden){refreshQuota();$('#chatIn').focus()}};
 $('#closeChat').onclick=()=>{if(document.body.classList.contains('dock')){lsSet('rp-dock','0');applyDock()}$('#drawer').hidden=true};
 function addMsg(cls,html){const m=document.createElement('div');m.className='msg '+cls;m.innerHTML=html;$('#msgs').appendChild(m);$('#msgs').scrollTop=1e9;return m}
