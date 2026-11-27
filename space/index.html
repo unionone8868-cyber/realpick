@@ -348,7 +348,7 @@ const toLocal=(x,z)=>furnG.worldToLocal(new THREE.Vector3(x,0,z));
 
 function clearG(g){for(const o of [...g.children]){g.remove(o);o.traverse(m=>{m.geometry&&m.geometry.dispose();if(m.material&&m.material.map){m.material.map.dispose();m.material.dispose()}})}}
 let planTex=null,WMe=[],WMi=[];
-const OP={void:{n:'(빈 벽)',w:1,top:99},window:{n:'창문',w:1.5,top:2.1},door:{n:'문',w:.9,top:2.1},glassdoor:{n:'유리문·자동문',w:1.6,top:2.2},folding:{n:'폴딩도어',w:3,top:2.4},curtain:{n:'통유리',w:4,top:99},open:{n:'뚫린 개구부',w:1.2,top:2.2}};
+const OP={void:{n:'(빈 벽)',w:1,top:99},window:{n:'창문',w:1.5,top:2.1},door:{n:'문',w:.9,top:2.1},glassdoor:{n:'유리문(여닫이)',w:1.6,top:2.2},autodoor:{n:'자동문(미닫이)',w:1.8,top:2.45},folding:{n:'폴딩도어',w:3,top:2.4},curtain:{n:'통유리',w:4,top:99},open:{n:'뚫린 개구부',w:1.2,top:2.2}};
 const SIDE={top:'위쪽',bottom:'아래쪽',left:'왼쪽',right:'오른쪽'};
 function extWalls(){const t=.15,{W,D}=S,LEN={top:W,bottom:W,left:D,right:D};
  return['top','bottom','left','right'].map(side=>{const len=LEN[side],ops=S.ops[side];for(const o of ops){o.w=Math.min(o.w,len);o.s=clamp(o.s,o.w/2,len-o.w/2)}const all=[...ops];for(const c of S.cut||[]){const hz=side==='top'||side==='bottom';if((side==='top'&&c.z0<.01)||(side==='bottom'&&c.z1>D-.01)||(side==='left'&&c.x0<.01)||(side==='right'&&c.x1>W-.01)){const L2=hz?W:D,a0=hz?c.x0:c.z0,b0=hz?c.x1:c.z1,a=a0<.01?-t-.01:a0,b=b0>L2-.01?L2+t+.01:b0;all.push({t:'void',s:(a+b)/2,w:b-a,cut:1})}}
@@ -373,7 +373,13 @@ function drawWall(g,w,h,col,th,list){const fr='#2f3338',base=w.h?0:-Math.PI/2;
  for(const{o,p,q}of ops){if(o.t==='void')continue;const T=OP[o.t],ud={w,op:o},L=q-p;if(T.top<h)seg(p,q,T.top,h,col,undefined,ud);
   if(o.t==='window'){seg(p,q,0,.9,col,undefined,ud);const sl=w.h?box(g,q-p+.06,.04,th+.1,'#e2ddd4',(p+q)/2,.9,w.c):box(g,th+.1,.04,q-p+.06,'#e2ddd4',w.c,.9,(p+q)/2);tag(sl,ud);panels(p,q,.94,2.1,Math.max(1,Math.round(L/1.2)),0,ud)}
   else if(o.t==='curtain'){panels(p,q,0,h,Math.max(1,Math.round(L/1.2)),0,ud)}
-  else if(o.t==='glassdoor'){panels(p,q,0,2.2,2,0,ud)}
+  else if(o.t==='glassdoor'||o.t==='autodoor'){const H=Math.min(2.2,h),AL='#4a4f57',GL2={transparent:true,opacity:.32,roughness:.05,metalness:.15,envMapIntensity:1.2},cut=h<2.2;
+   const mk=(at)=>{const hg=new THREE.Group();hg.position.set(w.h?at:w.c,0,w.h?w.c:at);hg.rotation.y=base;g.add(hg);return hg};
+   const leaf=(G,x0,u,dir,handle,dz=0)=>{const lf=new THREE.Group();lf.position.z=dz;const c=dir*u/2;box(lf,u-.05,H-.08,.018,'#a9cdf2',c,.05,0,GL2);box(lf,.045,H,.05,AL,dir*.0225,0,0,STEEL);box(lf,.045,H,.05,AL,dir*(u-.0225),0,0,STEEL);box(lf,u,.07,.05,AL,c,0,0,STEEL);if(!cut)box(lf,u,.045,.05,AL,c,H-.045,0,STEEL);
+    if(handle)for(const sd of[-.045,.045])box(lf,.028,Math.min(1,H-.45),.028,'#d5d9de',dir*(u-.13),.45,sd,STEEL);G.add(lf);return lf};
+   if(o.t==='glassdoor'){const n=L>=1.4?2:1,u=L/n;for(let i=0;i<n;i++){const dir=i===0?1:-1,G=mk(i===0?p:q),lf=leaf(G,0,u,dir,true);lf.rotation.y=-dir*.38;tag(G,ud)}}
+   else{const G=mk(p),u=L/2,gap=Math.min(.35,L*.12);const A=new THREE.Group();A.position.x=-gap/2;leaf(A,0,u,1,false,.035);const B=new THREE.Group();B.position.x=L+gap/2;leaf(B,0,u,-1,false,-.035);G.add(A,B);
+    const rl=box(G,L,.012,.1,'#3a3d42',L/2,0,0);rl.castShadow=false;if(!cut){box(G,L+.12,.24,.2,AL,L/2,2.2,0,STEEL);box(G,.12,.03,.02,'#e0533d',L/2,2.26,.105,{emissive:'#7a1d10'})}tag(G,ud)}}
   else if(o.t==='folding'){panels(p,q,0,2.4,Math.max(2,Math.round(L/.8)),1,ud)}
   else if(o.t==='door'){const lg=new THREE.Group(),ll=L-.06;box(lg,ll,Math.min(2.05,h),.04,'#a0744f',ll/2,0,0);lg.position.set(w.h?p+.03:w.c,0,w.h?w.c:p+.03);const inn=w.inward||1;lg.rotation.y=w.h?-1.1*inn:-Math.PI/2+1.1*inn;g.add(lg);tag(lg,ud)}
   else if(o.t==='open'){const f=box(g,w.h?L:th+.02,.01,w.h?th+.02:L,'#9c8f80',w.h?(p+q)/2:w.c,0,w.h?w.c:(p+q)/2);f.castShadow=false;tag(f,ud)}}}
@@ -723,7 +729,7 @@ $('#aiBtn').onclick=async()=>{if(!sample&&!keyMode)return;if(keyMode&&!CFG.aiPro
 "layout":{"items":[{"type":"가구 종류","x_m":숫자,"z_m":숫자,"rot_deg":0|90|180|270,"len_m":숫자|null}],
  "rooms":[{"name":"안방","closed":true,"x0_m":숫자,"z0_m":숫자,"x1_m":숫자,"z1_m":숫자,"door":{"wall":"top|bottom|left|right","offset_m":숫자}|null}],
  "walls":[{"x0_m":숫자,"z0_m":숫자,"x1_m":숫자,"z1_m":숫자,"door_at_m":숫자|null}],
- "openings":[{"wall":"top|bottom|left|right","type":"window|door|glassdoor|folding|curtain|open","offset_m":숫자,"width_m":숫자,"label":"문 너머 공간 이름|null"}]}`:''}}
+ "openings":[{"wall":"top|bottom|left|right","type":"window|door|glassdoor|autodoor|folding|curtain|open","offset_m":숫자,"width_m":숫자,"label":"문 너머 공간 이름|null"}]}`:''}}
 ${hasP?`도면이 있으므로 layout의 rooms·walls·openings를 도면 그대로 꼭 채우세요. 이것이 가장 중요합니다.
 - 먼저 치수선을 읽으세요. 바깥 전체 치수(가장 긴 치수선, 예: 10270)를 width_m·depth_m로 쓰고, 좌표 원점은 도면 바깥선의 왼쪽 위 모서리입니다. 위·아래·왼쪽·오른쪽의 칸별 치수(예: 3950, 3172.3, 2918.18)를 차례로 더해서 각 내벽의 x·z 위치를 계산하세요. 눈대중보다 치수 합산을 우선하세요. 치수가 mm면 1000으로 나누세요.
 - rooms: 도면에 이름이 적힌 공간을 하나도 빠짐없이(방1·방2·안방·거실·주방·화장실·현관·세탁실·드레스룸·발코니·수납공간 등) 적힌 이름 그대로. 벽으로 둘러싸인 방은 closed:true, 거실·주방처럼 벽 없이 트인 공간은 closed:false. 각 방의 문 위치를 door에(문 호 그림이 있는 벽).
