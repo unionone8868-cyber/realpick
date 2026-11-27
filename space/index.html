@@ -247,7 +247,13 @@ const LOWH=1.45;/* 낮춘 벽 높이: 창문(0.9m부터)이 보이도록 */
 let ROUND=0;const GC={};function geo(w,h,d){if(!ROUND||!THREE.RoundedBoxGeometry||Math.min(w,h,d)<.03)return new THREE.BoxGeometry(w,h,d);const r=Math.min(.035,Math.min(w,h,d)*.22),k=[w,h,d,r].map(v=>v.toFixed(3)).join('|');return GC[k]||(GC[k]=new THREE.RoundedBoxGeometry(w,h,d,2,r))}
 function box(g,w,h,d,c,x,y,z,o){const m=new THREE.Mesh(geo(w,h,d),M(c,o));m.position.set(x,y+h/2,z);m.castShadow=!(o&&o.transparent);m.receiveShadow=true;g.add(m);return m}
 function cyl(g,rt,rb,h,c,x,y,z,o,seg=24){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),M(c,o));m.position.set(x,y+h/2,z);m.castShadow=m.receiveShadow=true;g.add(m);return m}
-function chair(g,x,z,face,c='#3b3f46'){if(MDL.ready){const m=mdl('chair',.46,.5);if(m){m.position.set(x,0,z);m.rotation.y=face+(MDL.rot.chair||0);g.add(m);return}}const ch=new THREE.Group();box(ch,.42,.05,.42,c,0,.43,0);box(ch,.42,.42,.05,c,0,.48,-.19);for(const[a,b]of[[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]])box(ch,.03,.43,.03,'#2a2a2a',a,0,b);ch.position.set(x,0,z);ch.rotation.y=face;g.add(ch)}
+function chair(g,x,z,face,c='#3b3f46'){const ch=new THREE.Group(),LEG='#2b2d31';
+ for(const[a,b]of[[-.17,-.16],[.17,-.16],[-.17,.16],[.17,.16]])cyl(ch,.014,.011,.45,LEG,a,0,b,STEEL,8);
+ for(const b of[-.16,.16])box(ch,.36,.018,.018,LEG,0,.16,b,STEEL);
+ box(ch,.43,.025,.41,LEG,0,.44,0,STEEL);box(ch,.42,.055,.4,c,0,.462,.01,{roughness:.85});
+ for(const a of[-.17,.17]){const p=box(ch,.022,.43,.022,LEG,a,.45,-.19,STEEL);p.rotation.x=-.1}
+ const bk=box(ch,.42,.2,.035,c,0,.68,-.215,{roughness:.85});bk.rotation.x=-.12;
+ ch.position.set(x,0,z);ch.rotation.y=face;g.add(ch)}
 function stool(g,x,z){if(MDL.ready){const m=mdl('stool',.38,.38);if(m){m.position.set(x,0,z);g.add(m);return}}cyl(g,.18,.18,.06,'#2b2b2b',x,.72,z);cyl(g,.025,.025,.72,'#8a8f96',x,0,z,STEEL,8);cyl(g,.17,.17,.02,'#8a8f96',x,0,z,STEEL)}
 const faceTo=(x,z)=>Math.atan2(-x,-z);
 const WOOD='#a9784f',DWOOD='#5b3b26',LWOOD='#d8b98f';
@@ -919,7 +925,7 @@ function svLoad(id){const x=svGet().find(v=>v.id===id);if(!x)return;if(WALK.on)e
 $('#svBtn').onclick=svSave;svRender();
 
 /* --- 실제 3D 가구 모델 (KayKit Furniture Bits, CC0) --- */
-const MDL={files:{sofa:'couch_pillows',armchair:'armchair_pillows',bed2:'bed_double_A',kingbed:'bed_double_B',bed1:'bed_single_A',cabinet:'cabinet_medium',nightstand:'cabinet_small',bookshelf:'shelf_B_large_decorated',lamp:'lamp_standing',plant:'cactus_medium_A',bigplant:'cactus_medium_B',chair:'chair_A',stool:'chair_stool_wood'},rot:{},proto:{},ready:false};
+const MDL={files:{sofa:'couch_pillows',armchair:'armchair_pillows',bed2:'bed_double_A',kingbed:'bed_double_B',bed1:'bed_single_A',cabinet:'cabinet_medium',nightstand:'cabinet_small',bookshelf:'shelf_B_large_decorated',lamp:'lamp_standing',plant:'cactus_medium_A',bigplant:'cactus_medium_B'},rot:{},proto:{},ready:false};
 function mdl(k,w,d,rotY=0){const p=MDL.proto[k];if(!p)return null;const o=p.o.clone(true),sz=new THREE.Vector3(),c=new THREE.Vector3();p.b.getSize(sz);p.b.getCenter(c);const s=Math.min(w/sz.x,d/sz.z);o.scale.setScalar(s);o.position.set(-c.x*s,-p.b.min.y*s,-c.z*s);const g=new THREE.Group();g.add(o);g.rotation.y=rotY;return g}
 function loadModels(){if(!THREE.GLTFLoader||location.protocol==='file:')return;const L=new THREE.GLTFLoader(),base=new URL('models/',location.href).href,ks=Object.keys(MDL.files);let left=ks.length;
  const done=()=>{if(--left)return;MDL.ready=Object.keys(MDL.proto).length>0;if(MDL.ready&&furnG.children.length){const keep=serial();restore(keep)}};
